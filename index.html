@@ -69,7 +69,7 @@
     .inline-add{display:grid;grid-template-columns:1fr auto;gap:8px}
     .daily-list{display:grid;gap:10px}
     .daily-card{border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:15px;background:var(--surface2);padding:12px}
-    .daily-card.symptom{border-left-color:var(--symptom)}.daily-card.factor{border-left-color:var(--factor)}
+    .daily-card.pain{border-left-color:var(--pain)}.daily-card.symptom{border-left-color:var(--symptom)}.daily-card.factor{border-left-color:var(--factor)}
     .daily-card.done{opacity:.58}
     .daily-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
     .daily-card-name{font-weight:840}.daily-card-type{font-size:.76rem;text-transform:uppercase;color:var(--muted)}
@@ -120,7 +120,7 @@
               <button type="button" class="chip-button symptom" data-event-type="symptom">Symptôme</button>
               <button type="button" class="chip-button factor" data-event-type="factor">Facteur</button>
               <button type="button" class="chip-button" data-event-type="recurring">Évaluer mes éléments récurrents</button>
-              <button type="button" class="chip-button" data-event-type="daily">Mes symptômes et facteurs quotidiens</button>
+              <button type="button" class="chip-button" data-event-type="daily">Mes douleurs, symptômes et facteurs quotidiens</button>
             </div>
           </div>
           <div class="field">
@@ -140,7 +140,7 @@
 
         <div class="event-fields" id="dailyFields">
           <div class="card">
-            <h3>Mes symptômes et facteurs quotidiens</h3>
+            <h3>Mes douleurs, symptômes et facteurs quotidiens</h3>
             <p class="muted">Les éléments non évalués aujourd’hui apparaissent d’abord. Ceux déjà évalués restent accessibles pour une nouvelle saisie ou pour modifier la dernière évaluation du jour.</p>
             <div class="field">
               <label for="dailyHistorySelect">Ajouter un élément de l’historique</label>
@@ -535,7 +535,7 @@ function loadSettings(){
       version:1,
       customZones:Array.isArray(parsed.customZones)?[...new Set(parsed.customZones.map(normalizeKey).filter(Boolean))]:[],
       dailyItems:Array.isArray(parsed.dailyItems)?parsed.dailyItems
-        .filter(item=>item&&["symptom","factor"].includes(item.type)&&normalizeKey(item.name))
+        .filter(item=>item&&["pain","symptom","factor"].includes(item.type)&&normalizeKey(item.name))
         .map(item=>({type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()})):[]
     };
   }catch{return defaultSettings()}
@@ -752,7 +752,7 @@ function dailyItemKey(type,name){return `${type}|||${normalizeKey(name)}`;}
 
 function dailyHistoricalCandidates(){
   const map=new Map();
-  events.filter(event=>["symptom","factor"].includes(event.type)).forEach(event=>{
+  events.filter(event=>["pain","symptom","factor"].includes(event.type)).forEach(event=>{
     const key=dailyItemKey(event.type,event.name);
     const current=map.get(key);
     if(!current||new Date(event.timestamp)>new Date(current.timestamp))map.set(key,event);
@@ -775,7 +775,7 @@ function renderDailyHistorySelect(){
 }
 
 function addDailyItem(type,name){
-  if(!["symptom","factor"].includes(type))return;
+  if(!["pain","symptom","factor"].includes(type))return;
   const cleanName=normalizeKey(name);
   const key=dailyItemKey(type,cleanName);
   if(!appSettings.dailyItems.some(item=>dailyItemKey(item.type,item.name)===key)){
@@ -1334,7 +1334,7 @@ function renderQDSAScore(){
 }
 
 function exportData(){
-  const payload={app:"Suivi santé",version:10,exportedAt:new Date().toISOString(),events,settings:appSettings};
+  const payload={app:"Suivi santé",version:11,exportedAt:new Date().toISOString(),events,settings:appSettings};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`suivi-sante-${localDateValue()}.json`;a.click();URL.revokeObjectURL(url);setStatus($("dataStatus"),"Export créé.");
 }
 async function importData(file){
@@ -1361,7 +1361,7 @@ async function importData(file){
       const dailyMap=new Map(appSettings.dailyItems.map(item=>[dailyItemKey(item.type,item.name),item]));
       if(Array.isArray(parsed.settings.dailyItems)){
         parsed.settings.dailyItems
-          .filter(item=>item&&["symptom","factor"].includes(item.type)&&normalizeKey(item.name))
+          .filter(item=>item&&["pain","symptom","factor"].includes(item.type)&&normalizeKey(item.name))
           .forEach(item=>{
             const normalized={type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()};
             dailyMap.set(dailyItemKey(normalized.type,normalized.name),normalized);
