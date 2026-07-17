@@ -60,7 +60,22 @@
     .recurring-item{width:100%;text-align:left;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;background:var(--surface2);color:var(--text);padding:11px}
     .recurring-item.pain{border-left-color:var(--pain)}.recurring-item.symptom{border-left-color:var(--symptom)}.recurring-item.factor{border-left-color:var(--factor)}
     .recurring-name{display:block;font-weight:820}.recurring-meta{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
-    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}}
+    .zone-options{display:flex;flex-wrap:wrap;gap:6px}
+    .zone-option{border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--text);padding:7px 10px;font-size:.84rem}
+    .zone-option.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .zone-custom-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .zone-custom-item{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:3px 4px 3px 9px;font-size:.82rem}
+    .zone-remove{border:0;background:transparent;color:var(--danger);font-weight:900;padding:3px 6px;border-radius:999px}
+    .inline-add{display:grid;grid-template-columns:1fr auto;gap:8px}
+    .daily-list{display:grid;gap:10px}
+    .daily-card{border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:15px;background:var(--surface2);padding:12px}
+    .daily-card.symptom{border-left-color:var(--symptom)}.daily-card.factor{border-left-color:var(--factor)}
+    .daily-card.done{opacity:.58}
+    .daily-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .daily-card-name{font-weight:840}.daily-card-type{font-size:.76rem;text-transform:uppercase;color:var(--muted)}
+    .daily-status{font-size:.82rem;font-weight:760}.daily-status.pending{color:var(--negative)}.daily-status.done{color:var(--positive)}
+    .daily-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}}
     .actions,.chips,.quick-buttons,.segmented,.filters{display:flex;flex-wrap:wrap;gap:8px}
     .btn,.chip-button{border:1px solid transparent;border-radius:12px;min-height:42px;padding:9px 13px;font-weight:750}
     .btn{background:var(--accent);color:#fff}.btn.secondary,.chip-button{background:var(--surface2);border-color:var(--line);color:var(--text)}.btn.danger{background:transparent;border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}.btn.small,.chip-button{min-height:36px;padding:7px 10px;font-size:.85rem}.btn.full{width:100%}
@@ -105,6 +120,7 @@
               <button type="button" class="chip-button symptom" data-event-type="symptom">Symptôme</button>
               <button type="button" class="chip-button factor" data-event-type="factor">Facteur</button>
               <button type="button" class="chip-button" data-event-type="recurring">Évaluer mes éléments récurrents</button>
+              <button type="button" class="chip-button" data-event-type="daily">Mes symptômes et facteurs quotidiens</button>
             </div>
           </div>
           <div class="field">
@@ -119,6 +135,21 @@
             <p class="muted">Choisis un élément déjà utilisé. La date et l’heure sont réglées sur maintenant, puis tu peux compléter l’intensité et les autres informations.</p>
             <div class="field"><label for="recurringSearch">Rechercher</label><input type="text" id="recurringSearch" placeholder="Douleur, symptôme ou facteur…"></div>
             <div id="recurringList" class="recurring-list"></div>
+          </div>
+        </div>
+
+        <div class="event-fields" id="dailyFields">
+          <div class="card">
+            <h3>Mes symptômes et facteurs quotidiens</h3>
+            <p class="muted">Les éléments non évalués aujourd’hui apparaissent d’abord. Ceux déjà évalués restent accessibles pour une nouvelle saisie ou pour modifier la dernière évaluation du jour.</p>
+            <div class="field">
+              <label for="dailyHistorySelect">Ajouter un élément de l’historique</label>
+              <div class="inline-add">
+                <select id="dailyHistorySelect"></select>
+                <button type="button" class="btn secondary" id="addDailyItemButton">Ajouter</button>
+              </div>
+            </div>
+            <div id="dailyList" class="daily-list"></div>
           </div>
         </div>
 
@@ -145,7 +176,26 @@
                 </div>
               </details>
             </div>
-            <div class="field"><label for="painZones">Zone(s)</label><input type="text" id="painZones" placeholder="Ex. tempe droite, bas du dos"></div>
+            <div class="field">
+              <span class="field-title">Zone(s)</span>
+              <input type="hidden" id="painZones">
+              <div id="painSelectedZones" class="selected-adjectives empty">Aucune zone sélectionnée.</div>
+              <details class="qdsa-picker">
+                <summary>Choisir les zones du corps</summary>
+                <div class="qdsa-content">
+                  <div class="field"><label for="painZoneSearch">Filtrer les zones</label><input type="text" id="painZoneSearch" placeholder="Ex. tête, dos, genou"></div>
+                  <div id="painZoneOptions" class="zone-options"></div>
+                  <div class="field" style="margin-top:14px">
+                    <label for="painNewZone">Ajouter une zone personnelle</label>
+                    <div class="inline-add">
+                      <input type="text" id="painNewZone" placeholder="Ex. omoplate droite">
+                      <button type="button" class="btn secondary" data-add-zone-prefix="pain">Ajouter</button>
+                    </div>
+                  </div>
+                  <div id="painCustomZones" class="zone-custom-list"></div>
+                </div>
+              </details>
+            </div>
             <div class="field"><label for="painNotes">Notes supplémentaires</label><textarea id="painNotes" placeholder="Durée, contexte, évolution…"></textarea></div>
           </div>
         </div>
@@ -160,7 +210,26 @@
               <div class="intensity-scale" id="symptomIntensityScale" aria-label="Intensité du symptôme de 0 à 10"></div>
               <div class="intensity-anchors"><span>Absent</span><span>Maximal</span></div>
             </div>
-            <div class="field"><label for="symptomZones">Zone(s)</label><input type="text" id="symptomZones" placeholder="Ex. gorge, abdomen, jambes"></div>
+            <div class="field">
+              <span class="field-title">Zone(s)</span>
+              <input type="hidden" id="symptomZones">
+              <div id="symptomSelectedZones" class="selected-adjectives empty">Aucune zone sélectionnée.</div>
+              <details class="qdsa-picker">
+                <summary>Choisir les zones du corps</summary>
+                <div class="qdsa-content">
+                  <div class="field"><label for="symptomZoneSearch">Filtrer les zones</label><input type="text" id="symptomZoneSearch" placeholder="Ex. gorge, abdomen, jambes"></div>
+                  <div id="symptomZoneOptions" class="zone-options"></div>
+                  <div class="field" style="margin-top:14px">
+                    <label for="symptomNewZone">Ajouter une zone personnelle</label>
+                    <div class="inline-add">
+                      <input type="text" id="symptomNewZone" placeholder="Ex. sinus">
+                      <button type="button" class="btn secondary" data-add-zone-prefix="symptom">Ajouter</button>
+                    </div>
+                  </div>
+                  <div id="symptomCustomZones" class="zone-custom-list"></div>
+                </div>
+              </details>
+            </div>
             <div class="field"><label for="symptomNotes">Notes supplémentaires</label><textarea id="symptomNotes" placeholder="Contexte, sensation, durée…"></textarea></div>
           </div>
         </div>
@@ -390,8 +459,23 @@
 "use strict";
 
 const STORAGE_KEY = "healthEventTrackerV2";
+const SETTINGS_KEY = "healthEventTrackerSettingsV1";
 const OLD_STORAGE_KEY = "painTrackerEntriesV1";
+
+const DEFAULT_BODY_ZONES = [
+  "corps entier","tête","front","tempe droite","tempe gauche","œil droit","œil gauche",
+  "oreille droite","oreille gauche","visage","mâchoire","gorge","cou","nuque",
+  "épaule droite","épaule gauche","omoplate droite","omoplate gauche",
+  "bras droit","bras gauche","coude droit","coude gauche","avant-bras droit","avant-bras gauche",
+  "poignet droit","poignet gauche","main droite","main gauche","doigts droits","doigts gauches",
+  "thorax","poitrine","haut du dos","milieu du dos","bas du dos","abdomen","bassin",
+  "hanche droite","hanche gauche","fesse droite","fesse gauche","aine",
+  "cuisse droite","cuisse gauche","genou droit","genou gauche","mollet droit","mollet gauche",
+  "cheville droite","cheville gauche","pied droit","pied gauche","orteils droits","orteils gauches"
+];
+
 let events = loadEvents();
+let appSettings = loadSettings();
 let confirmAction = null;
 
 const QDSA_GROUPS = [
@@ -440,6 +524,24 @@ function loadEvents(){
 }
 function saveEvents(){localStorage.setItem(STORAGE_KEY,JSON.stringify(events));}
 
+function defaultSettings(){
+  return {version:1,customZones:[],dailyItems:[]};
+}
+function loadSettings(){
+  try{
+    const parsed=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null");
+    if(!parsed||typeof parsed!=="object")return defaultSettings();
+    return {
+      version:1,
+      customZones:Array.isArray(parsed.customZones)?[...new Set(parsed.customZones.map(normalizeKey).filter(Boolean))]:[],
+      dailyItems:Array.isArray(parsed.dailyItems)?parsed.dailyItems
+        .filter(item=>item&&["symptom","factor"].includes(item.type)&&normalizeKey(item.name))
+        .map(item=>({type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()})):[]
+    };
+  }catch{return defaultSettings()}
+}
+function saveSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(appSettings));}
+
 function migrateOldData(){
   if(events.length || localStorage.getItem(`${STORAGE_KEY}:migrationDone`)) return 0;
   let old=[];
@@ -463,17 +565,19 @@ function migrateOldData(){
 }
 
 function setEventType(type){
-  const recurring=type==="recurring";
+  const utilityMode=type==="recurring"||type==="daily";
   $("currentEventType").value=type;
   $$(".event-fields").forEach(el=>el.classList.toggle("active",el.id===`${type}Fields`));
   $$("[data-event-type]").forEach(btn=>btn.classList.toggle("active",btn.dataset.eventType===type));
   $("painName").required=type==="pain";
   $("symptomName").required=type==="symptom";
   $("factorName").required=type==="factor";
-  $("saveButton").hidden=recurring;
-  $("cancelEditButton").hidden=recurring||!$("editingId").value;
-  if(recurring){
+  $("saveButton").hidden=utilityMode;
+  $("cancelEditButton").hidden=utilityMode||!$("editingId").value;
+  if(type==="recurring"){
     renderRecurringList();
+  }else if(type==="daily"){
+    renderDailyPanel();
   }else{
     $("saveButton").textContent=$("editingId").value?`Enregistrer les modifications`:`Enregistrer ${type==="pain"?"la douleur":type==="symptom"?"le symptôme":"le facteur"}`;
   }
@@ -526,6 +630,73 @@ function toggleQDSAWord(word){
   renderQDSA();
 }
 
+function allBodyZones(){
+  return [...new Set([...DEFAULT_BODY_ZONES,...appSettings.customZones])].sort((a,b)=>a.localeCompare(b,"fr"));
+}
+
+function selectedZones(prefix){
+  return normalizeList($(`${prefix}Zones`).value);
+}
+
+function renderZonePicker(prefix){
+  const selectedValues=selectedZones(prefix);
+  const selectedSet=new Set(selectedValues);
+  const selectedContainer=$(`${prefix}SelectedZones`);
+  if(selectedValues.length){
+    selectedContainer.className="selected-adjectives";
+    selectedContainer.innerHTML=selectedValues.map(zone=>`<button type="button" class="zone-option active" data-zone-prefix="${prefix}" data-zone-value="${escapeHtml(zone)}">${escapeHtml(zone)}</button>`).join("");
+  }else{
+    selectedContainer.className="selected-adjectives empty";
+    selectedContainer.textContent="Aucune zone sélectionnée.";
+  }
+
+  const query=normalizeKey($(`${prefix}ZoneSearch`)?.value||"");
+  const zones=allBodyZones().filter(zone=>!query||zone.includes(query));
+  $(`${prefix}ZoneOptions`).innerHTML=zones.length?zones.map(zone=>`<button type="button" class="zone-option ${selectedSet.has(zone)?"active":""}" data-zone-prefix="${prefix}" data-zone-value="${escapeHtml(zone)}">${escapeHtml(zone)}</button>`).join(""):`<div class="empty">Aucune zone correspondante.</div>`;
+
+  const customContainer=$(`${prefix}CustomZones`);
+  customContainer.innerHTML=appSettings.customZones.length
+    ? appSettings.customZones.map(zone=>`<span class="zone-custom-item">${escapeHtml(zone)}<button type="button" class="zone-remove" data-remove-zone="${escapeHtml(zone)}" aria-label="Supprimer ${escapeHtml(zone)}">×</button></span>`).join("")
+    : `<span class="help">Aucune zone personnelle.</span>`;
+}
+
+function renderZonePickers(){
+  renderZonePicker("pain");
+  renderZonePicker("symptom");
+}
+
+function toggleZone(prefix,zone){
+  const key=normalizeKey(zone);
+  const values=selectedZones(prefix);
+  const next=values.includes(key)?values.filter(value=>value!==key):[...values,key];
+  $(`${prefix}Zones`).value=next.join(", ");
+  renderZonePicker(prefix);
+}
+
+function addCustomZone(prefix){
+  const input=$(`${prefix}NewZone`);
+  const zone=normalizeKey(input.value);
+  if(!zone)return;
+  if(!DEFAULT_BODY_ZONES.includes(zone)&&!appSettings.customZones.includes(zone)){
+    appSettings.customZones.push(zone);
+    appSettings.customZones.sort((a,b)=>a.localeCompare(b,"fr"));
+    saveSettings();
+  }
+  input.value="";
+  if(!selectedZones(prefix).includes(zone))toggleZone(prefix,zone);
+  else renderZonePickers();
+}
+
+function removeCustomZone(zone){
+  const key=normalizeKey(zone);
+  appSettings.customZones=appSettings.customZones.filter(item=>item!==key);
+  ["pain","symptom"].forEach(prefix=>{
+    $(`${prefix}Zones`).value=selectedZones(prefix).filter(item=>item!==key).join(", ");
+  });
+  saveSettings();
+  renderZonePickers();
+}
+
 function recurringItems(){
   const map=new Map();
   events.forEach(event=>{
@@ -555,11 +726,13 @@ function startRecurring(type,name){
     $("painZones").value="";
     $("painNotes").value="";
     renderQDSA();
+    renderZonePicker("pain");
   }else if(type==="symptom"){
     $("symptomName").value=name;
     setRange("symptom",0);
     $("symptomZones").value="";
     $("symptomNotes").value="";
+    renderZonePicker("symptom");
   }else{
     const previous=events.filter(event=>event.type==="factor"&&event.name===name).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp))[0];
     $("factorName").value=name;
@@ -575,6 +748,113 @@ function startRecurring(type,name){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function dailyItemKey(type,name){return `${type}|||${normalizeKey(name)}`;}
+
+function dailyHistoricalCandidates(){
+  const map=new Map();
+  events.filter(event=>["symptom","factor"].includes(event.type)).forEach(event=>{
+    const key=dailyItemKey(event.type,event.name);
+    const current=map.get(key);
+    if(!current||new Date(event.timestamp)>new Date(current.timestamp))map.set(key,event);
+  });
+  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"fr")||a.type.localeCompare(b.type));
+}
+
+function renderDailyHistorySelect(){
+  const select=$("dailyHistorySelect");
+  if(!select)return;
+  const saved=new Set(appSettings.dailyItems.map(item=>dailyItemKey(item.type,item.name)));
+  const candidates=dailyHistoricalCandidates().filter(event=>!saved.has(dailyItemKey(event.type,event.name)));
+  select.innerHTML=candidates.length
+    ? `<option value="">Choisir un élément…</option>`+candidates.map(event=>{
+        const value=encodeURIComponent(JSON.stringify({type:event.type,name:event.name}));
+        return `<option value="${value}">${labelForType(event.type)} — ${escapeHtml(event.name)}</option>`;
+      }).join("")
+    : `<option value="">Tous les éléments historiques sont déjà ajoutés</option>`;
+  $("addDailyItemButton").disabled=!candidates.length;
+}
+
+function addDailyItem(type,name){
+  if(!["symptom","factor"].includes(type))return;
+  const cleanName=normalizeKey(name);
+  const key=dailyItemKey(type,cleanName);
+  if(!appSettings.dailyItems.some(item=>dailyItemKey(item.type,item.name)===key)){
+    appSettings.dailyItems.push({type,name:cleanName,addedAt:new Date().toISOString()});
+    saveSettings();
+  }
+  renderDailyPanel();
+}
+
+function removeDailyItem(type,name){
+  const key=dailyItemKey(type,name);
+  appSettings.dailyItems=appSettings.dailyItems.filter(item=>dailyItemKey(item.type,item.name)!==key);
+  saveSettings();
+  renderDailyPanel();
+}
+
+function dailyItemDetails(){
+  const today=localDateValue();
+  return appSettings.dailyItems.map(item=>{
+    const matching=events
+      .filter(event=>event.type===item.type&&event.name===item.name)
+      .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    const todayEvents=matching.filter(event=>localDateValue(new Date(event.timestamp))===today);
+    return {
+      ...item,
+      lastEvent:matching[0]||null,
+      todayEvents,
+      latestToday:todayEvents[0]||null,
+      evaluatedToday:todayEvents.length>0
+    };
+  }).sort((a,b)=>{
+    if(a.evaluatedToday!==b.evaluatedToday)return a.evaluatedToday?1:-1;
+    if(!a.evaluatedToday){
+      const aTime=a.lastEvent?new Date(a.lastEvent.timestamp).getTime():-Infinity;
+      const bTime=b.lastEvent?new Date(b.lastEvent.timestamp).getTime():-Infinity;
+      return aTime-bTime;
+    }
+    return new Date(b.latestToday.timestamp)-new Date(a.latestToday.timestamp);
+  });
+}
+
+function renderDailyList(){
+  const container=$("dailyList");
+  if(!container)return;
+  const items=dailyItemDetails();
+  if(!items.length){
+    container.innerHTML=`<div class="empty">Ajoute un symptôme ou un facteur depuis ton historique.</div>`;
+    return;
+  }
+  container.innerHTML=items.map(item=>{
+    const lastLabel=item.lastEvent
+      ? new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(item.lastEvent.timestamp))
+      : "Jamais";
+    const todayLabel=item.evaluatedToday
+      ? `${item.todayEvents.length} évaluation${item.todayEvents.length>1?"s":""} aujourd’hui`
+      : "Non évalué aujourd’hui";
+    return `<article class="daily-card ${item.type} ${item.evaluatedToday?"done":""}">
+      <div class="daily-card-head">
+        <div>
+          <div class="daily-card-type">${labelForType(item.type)}</div>
+          <div class="daily-card-name">${escapeHtml(item.name)}</div>
+          <div class="recurring-meta">Dernière évaluation : ${escapeHtml(lastLabel)}</div>
+        </div>
+        <div class="daily-status ${item.evaluatedToday?"done":"pending"}">${todayLabel}</div>
+      </div>
+      <div class="daily-actions">
+        <button type="button" class="btn small" data-daily-evaluate-type="${item.type}" data-daily-evaluate-name="${escapeHtml(item.name)}">${item.evaluatedToday?"Évaluer à nouveau":"Évaluer aujourd’hui"}</button>
+        ${item.latestToday?`<button type="button" class="btn secondary small" data-daily-edit="${item.latestToday.id}">Modifier aujourd’hui</button>`:""}
+        <button type="button" class="btn danger small" data-daily-remove-type="${item.type}" data-daily-remove-name="${escapeHtml(item.name)}">Retirer de la liste</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function renderDailyPanel(){
+  renderDailyHistorySelect();
+  renderDailyList();
+}
+
 function updateRelatedFields(){
   const enabled=Boolean($("relatedType").value);
   $("relatedName").disabled=!enabled;
@@ -585,7 +865,7 @@ function updateRelatedFields(){
 
 function currentEvent(){
   const type=$("currentEventType").value;
-  if(type==="recurring")return null;
+  if(type==="recurring"||type==="daily")return null;
   const base={id:$("editingId").value||uid(),type,timestamp:new Date($("timestamp").value).toISOString(),updatedAt:new Date().toISOString()};
   if(type==="pain") return {...base,name:normalizeKey($("painName").value),intensity:Number($("painIntensity").value),adjectives:normalizeList($("painAdjectives").value),zones:normalizeList($("painZones").value),notes:normalizeText($("painNotes").value)};
   if(type==="symptom") return {...base,name:normalizeKey($("symptomName").value),intensity:Number($("symptomIntensity").value),zones:normalizeList($("symptomZones").value),notes:normalizeText($("symptomNotes").value)};
@@ -596,9 +876,18 @@ function resetForm(){
   $("eventForm").reset();
   $("timestamp").value=localDateTimeValue();
   $("editingId").value="";
+  $("painAdjectives").value="";
+  $("qdsaSearch").value="";
+  $("painZones").value="";
+  $("symptomZones").value="";
+  $("painZoneSearch").value="";
+  $("symptomZoneSearch").value="";
+  $("painNewZone").value="";
+  $("symptomNewZone").value="";
   setRange("pain",0);setRange("symptom",0);
   setEventType("pain");
   renderQDSA();
+  renderZonePickers();
   $("cancelEditButton").hidden=true;
   updateRelatedFields();
 }
@@ -607,9 +896,9 @@ function editEvent(id){
   const event=events.find(item=>item.id===id);if(!event)return;
   $("editingId").value=event.id;$("timestamp").value=localDateTimeValue(new Date(event.timestamp));setEventType(event.type);
   if(event.type==="pain"){
-    $("painName").value=event.name;setRange("pain",event.intensity);$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();
+    $("painName").value=event.name;setRange("pain",event.intensity);$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();renderZonePicker("pain");
   }else if(event.type==="symptom"){
-    $("symptomName").value=event.name;setRange("symptom",event.intensity);$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";
+    $("symptomName").value=event.name;setRange("symptom",event.intensity);$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";renderZonePicker("symptom");
   }else{
     $("factorName").value=event.name;$("factorPolarity").value=event.polarity||"neutral";$("factorCategory").value=event.category||"other";$("factorAmount").value=event.amount||"";$("relatedType").value=event.relatedType||"";updateRelatedFields();$("relatedName").value=event.relatedName||"";$("factorEffect").value=event.effect||"";$("factorCertainty").value=event.certainty||"suspected";$("factorNotes").value=event.notes||"";
   }
@@ -1045,29 +1334,81 @@ function renderQDSAScore(){
 }
 
 function exportData(){
-  const payload={app:"Suivi santé",version:9,exportedAt:new Date().toISOString(),events};
+  const payload={app:"Suivi santé",version:10,exportedAt:new Date().toISOString(),events,settings:appSettings};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`suivi-sante-${localDateValue()}.json`;a.click();URL.revokeObjectURL(url);setStatus($("dataStatus"),"Export créé.");
 }
 async function importData(file){
   try{
-    const parsed=JSON.parse(await file.text()),imported=Array.isArray(parsed)?parsed:parsed.events;if(!Array.isArray(imported))throw new Error();
-    const valid=imported.filter(e=>e&&typeof e.id==="string"&&["pain","symptom","factor"].includes(e.type)&&!Number.isNaN(new Date(e.timestamp).getTime()));
-    const map=new Map(events.map(e=>[e.id,e]));valid.forEach(e=>map.set(e.id,e));events=[...map.values()];saveEvents();renderAll();setStatus($("dataStatus"),`${valid.length} événement(s) importé(s) ou mis à jour.`);
-  }catch{setStatus($("dataStatus"),"Import impossible : fichier non reconnu.",5000)}
+    const parsed=JSON.parse(await file.text());
+    const imported=Array.isArray(parsed)?parsed:parsed.events;
+    if(!Array.isArray(imported))throw new Error();
+
+    const valid=imported.filter(event=>
+      event&&typeof event.id==="string"&&["pain","symptom","factor"].includes(event.type)&&
+      !Number.isNaN(new Date(event.timestamp).getTime())
+    );
+    const map=new Map(events.map(event=>[event.id,event]));
+    valid.forEach(event=>map.set(event.id,event));
+    events=[...map.values()];
+    saveEvents();
+
+    if(parsed&&parsed.settings&&typeof parsed.settings==="object"){
+      const importedZones=Array.isArray(parsed.settings.customZones)
+        ? parsed.settings.customZones.map(normalizeKey).filter(Boolean)
+        : [];
+      appSettings.customZones=[...new Set([...appSettings.customZones,...importedZones])].sort((a,b)=>a.localeCompare(b,"fr"));
+
+      const dailyMap=new Map(appSettings.dailyItems.map(item=>[dailyItemKey(item.type,item.name),item]));
+      if(Array.isArray(parsed.settings.dailyItems)){
+        parsed.settings.dailyItems
+          .filter(item=>item&&["symptom","factor"].includes(item.type)&&normalizeKey(item.name))
+          .forEach(item=>{
+            const normalized={type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()};
+            dailyMap.set(dailyItemKey(normalized.type,normalized.name),normalized);
+          });
+      }
+      appSettings.dailyItems=[...dailyMap.values()];
+      saveSettings();
+    }
+
+    renderAll();
+    setStatus($("dataStatus"),`${valid.length} événement(s) importé(s) ou mis à jour. Les anciens exports restent compatibles.`);
+  }catch{
+    setStatus($("dataStatus"),"Import impossible : fichier non reconnu.",5000);
+  }
 }
 
-function renderAll(){updateNameLists();renderRecurringList();renderQDSA();renderJournal();renderCharts();renderStats();renderLinks();renderQDSAScore();}
+function renderAll(){updateNameLists();renderRecurringList();renderDailyPanel();renderQDSA();renderZonePickers();renderJournal();renderCharts();renderStats();renderLinks();renderQDSAScore();}
 
 document.addEventListener("click",event=>{
   const typeBtn=event.target.closest("[data-event-type]");if(typeBtn)setEventType(typeBtn.dataset.eventType);
   const intensityBtn=event.target.closest("[data-intensity-prefix]");if(intensityBtn)setRange(intensityBtn.dataset.intensityPrefix,intensityBtn.dataset.intensityValue);
   const qdsaBtn=event.target.closest("[data-qdsa-word]");if(qdsaBtn)toggleQDSAWord(qdsaBtn.dataset.qdsaWord);
   const recurringBtn=event.target.closest("[data-recurring-type]");if(recurringBtn)startRecurring(recurringBtn.dataset.recurringType,recurringBtn.dataset.recurringName);
+  const zoneBtn=event.target.closest("[data-zone-prefix]");if(zoneBtn)toggleZone(zoneBtn.dataset.zonePrefix,zoneBtn.dataset.zoneValue);
+  const addZoneBtn=event.target.closest("[data-add-zone-prefix]");if(addZoneBtn)addCustomZone(addZoneBtn.dataset.addZonePrefix);
+  const removeZoneBtn=event.target.closest("[data-remove-zone]");if(removeZoneBtn)removeCustomZone(removeZoneBtn.dataset.removeZone);
+  const dailyEvaluate=event.target.closest("[data-daily-evaluate-type]");if(dailyEvaluate)startRecurring(dailyEvaluate.dataset.dailyEvaluateType,dailyEvaluate.dataset.dailyEvaluateName);
+  const dailyEdit=event.target.closest("[data-daily-edit]");if(dailyEdit)editEvent(dailyEdit.dataset.dailyEdit);
+  const dailyRemove=event.target.closest("[data-daily-remove-type]");if(dailyRemove)removeDailyItem(dailyRemove.dataset.dailyRemoveType,dailyRemove.dataset.dailyRemoveName);
   const editBtn=event.target.closest("[data-edit]");if(editBtn)editEvent(editBtn.dataset.edit);
   const deleteBtn=event.target.closest("[data-delete]");if(deleteBtn)deleteEvent(deleteBtn.dataset.delete);
 });
 $("qdsaSearch").addEventListener("input",renderQDSA);
 $("recurringSearch").addEventListener("input",renderRecurringList);
+["painZoneSearch","symptomZoneSearch"].forEach(id=>$(id).addEventListener("input",renderZonePickers));
+["painNewZone","symptomNewZone"].forEach(id=>$(id).addEventListener("keydown",event=>{
+  if(event.key==="Enter"){
+    event.preventDefault();
+    addCustomZone(id.startsWith("pain")?"pain":"symptom");
+  }
+}));
+$("addDailyItemButton").addEventListener("click",()=>{
+  const value=$("dailyHistorySelect").value;
+  if(!value)return;
+  const item=JSON.parse(decodeURIComponent(value));
+  addDailyItem(item.type,item.name);
+});
 $("relatedType").addEventListener("change",updateRelatedFields);
 $("eventForm").addEventListener("submit",event=>{
   event.preventDefault();const item=currentEvent();if(!item)return;if(!item.name){setStatus($("formStatus"),"Le nom de l’événement est obligatoire.",4000);return}
@@ -1087,7 +1428,7 @@ $("chartAll").addEventListener("click",()=>{$("chartFrom").value="";$("chartTo")
 $("qdsaMonthMode").addEventListener("change",()=>{updateQDSAMonthControls();renderQDSAScore()});
 $("exportButton").addEventListener("click",exportData);
 $("importInput").addEventListener("change",e=>{const[file]=e.target.files;if(file)importData(file);e.target.value=""});
-$("clearButton").addEventListener("click",()=>askConfirmation("Effacer toutes les données","Toutes les douleurs, symptômes et facteurs seront supprimés.",()=>{events=[];saveEvents();renderAll();setStatus($("dataStatus"),"Toutes les données ont été effacées.")}));
+$("clearButton").addEventListener("click",()=>askConfirmation("Effacer toutes les données","Toutes les douleurs, symptômes, facteurs, zones personnelles et listes quotidiennes seront supprimés.",()=>{events=[];appSettings=defaultSettings();saveEvents();saveSettings();renderAll();setStatus($("dataStatus"),"Toutes les données ont été effacées.")}));
 $("dialogConfirm").addEventListener("click",()=>{$("confirmDialog").close();const action=confirmAction;confirmAction=null;if(action)action()});
 $("dialogCancel").addEventListener("click",()=>{confirmAction=null;$("confirmDialog").close()});
 
