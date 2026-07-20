@@ -35,7 +35,7 @@
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
     @media(max-width:760px){.span-8,.span-6,.span-4{grid-column:span 12}.topbar{align-items:stretch}}
     .field{margin-bottom:15px} label,.field-title{display:block;font-weight:730;margin-bottom:7px}
-    input[type=text],input[type=datetime-local],input[type=date],input[type=number],textarea,select{width:100%;color:var(--text);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none}
+    input[type=text],input[type=datetime-local],input[type=date],input[type=month],input[type=number],textarea,select{width:100%;color:var(--text);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none}
     input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
     textarea{min-height:90px;resize:vertical}
     .intensity-scale{display:grid;grid-template-columns:repeat(11,minmax(38px,1fr));gap:6px}
@@ -75,12 +75,29 @@
     .daily-card-name{font-weight:840}.daily-card-type{font-size:.76rem;text-transform:uppercase;color:var(--muted)}
     .daily-status{font-size:.82rem;font-weight:760}.daily-status.pending{color:var(--negative)}.daily-status.done{color:var(--positive)}
     .daily-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}}
+    .agenda-alerts{display:grid;gap:8px}
+    .agenda-alert{border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:13px;background:var(--surface2);padding:10px 12px}
+    .agenda-alert.warning{border-left-color:var(--negative)}.agenda-alert.overdue{border-left-color:var(--danger)}
+    .agenda-alert-title{font-weight:830}.agenda-alert-body{color:var(--muted);font-size:.86rem;margin-top:3px}
+    .agenda-list{display:grid;gap:10px}
+    .agenda-card{border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:15px;background:var(--surface2);padding:13px}
+    .agenda-card.prescription{border-left-color:var(--factor)}
+    .agenda-card.due{border-left-color:var(--negative)}.agenda-card.overdue{border-left-color:var(--danger)}
+    .agenda-card.done{opacity:.58}
+    .agenda-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .agenda-title{font-weight:850;font-size:1.02rem}.agenda-meta{color:var(--muted);font-size:.84rem;margin-top:3px}
+    .agenda-status{font-size:.78rem;font-weight:820;text-align:right}
+    .agenda-status.good{color:var(--positive)}.agenda-status.warning{color:var(--negative)}.agenda-status.overdue{color:var(--danger)}
+    .agenda-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+    .calculated-date{border:1px solid var(--line);border-radius:12px;background:var(--surface2);padding:10px 12px;font-weight:760}
+    .ranking-number{display:inline-grid;place-items:center;min-width:32px;height:32px;border-radius:10px;background:var(--surface2);font-weight:850}
+    .checkbox-line{display:flex;align-items:center;gap:9px;font-weight:720}
+    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}.agenda-card-head{display:block}.agenda-status{text-align:left;margin-top:7px}}
     .actions,.chips,.quick-buttons,.segmented,.filters{display:flex;flex-wrap:wrap;gap:8px}
     .btn,.chip-button{border:1px solid transparent;border-radius:12px;min-height:42px;padding:9px 13px;font-weight:750}
     .btn{background:var(--accent);color:#fff}.btn.secondary,.chip-button{background:var(--surface2);border-color:var(--line);color:var(--text)}.btn.danger{background:transparent;border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}.btn.small,.chip-button{min-height:36px;padding:7px 10px;font-size:.85rem}.btn.full{width:100%}
     .chip-button.active{background:var(--accent);border-color:var(--accent);color:#fff}.chip-button.pain.active{background:var(--pain)}.chip-button.symptom.active{background:var(--symptom)}.chip-button.factor.active{background:var(--factor)}
-    .tabs{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(1080px,100%);display:grid;grid-template-columns:repeat(6,1fr);background:color-mix(in srgb,var(--surface) 94%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(12px);padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
+    .tabs{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(1080px,100%);display:grid;grid-template-columns:repeat(7,1fr);background:color-mix(in srgb,var(--surface) 94%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(12px);padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
     .tab{border:0;background:transparent;color:var(--muted);border-radius:12px;padding:8px 3px;font-size:.72rem;min-width:0}.tab strong{display:block;font-size:1.1rem;line-height:1;margin-bottom:4px}.tab.active{color:var(--accent);background:var(--surface2)}
     .page{display:none}.page.active{display:block}.event-fields{display:none}.event-fields.active{display:block}
     .day-group{margin-bottom:18px}.day-title{position:sticky;top:0;z-index:4;background:var(--bg);padding:8px 3px;font-size:1.05rem}
@@ -91,7 +108,8 @@
     .event-line{margin-top:7px;font-size:.9rem}.tag{display:inline-block;border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:4px 8px;margin:2px;font-size:.8rem}
     .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px}.metric-value{display:block;font-size:1.4rem;font-weight:850}.metric-label{color:var(--muted);font-size:.78rem}
     @media(max-width:640px){.summary-grid{grid-template-columns:repeat(2,1fr)}}
-    .chart{width:100%;min-height:250px;overflow-x:auto}.chart svg{width:100%;min-width:560px;height:270px;display:block}.chart-grid{stroke:var(--line);stroke-width:1}.chart-axis{fill:var(--muted);font-size:11px}.chart-line{fill:none;stroke:var(--accent);stroke-width:3}.chart-point{fill:var(--surface);stroke:var(--accent);stroke-width:2}.chart-bar{fill:var(--accent);opacity:.75}
+    .chart{width:100%;min-height:250px;overflow:hidden;touch-action:manipulation}.chart svg{width:100%;min-width:0;height:auto;min-height:240px;max-height:320px;display:block}.chart-grid{stroke:var(--line);stroke-width:1}.chart-axis{fill:var(--muted);font-size:11px}.chart-line{fill:none;stroke:var(--accent);stroke-width:3;vector-effect:non-scaling-stroke}.chart-point{fill:var(--surface);stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke;cursor:pointer}.chart-bar{fill:var(--accent);opacity:.75;cursor:pointer}.chart-hit{fill:transparent;cursor:pointer}.chart-readout{min-height:34px;margin-top:4px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);padding:7px 10px;text-align:center;font-size:.84rem;color:var(--muted)}.chart-readout strong{color:var(--text)}.chart-help{margin:0 0 8px;color:var(--muted);font-size:.82rem}
+    @media(max-width:640px){.chart{min-height:225px}.chart svg{min-height:220px;max-height:270px}.chart-axis{font-size:10px}}
     .frequency-row{display:grid;grid-template-columns:minmax(115px,1fr) 2fr 64px;gap:10px;align-items:center;margin:9px 0;font-size:.88rem}.bar-track{height:9px;background:var(--surface2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}.bar-fill{height:100%;background:var(--accent);border-radius:inherit}
     .table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:680px;font-size:.88rem}th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}th{color:var(--muted);font-size:.77rem;text-transform:uppercase;letter-spacing:.04em}
     .notice{background:color-mix(in srgb,var(--accent) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line));border-radius:13px;padding:11px 12px;font-size:.86rem}
@@ -120,7 +138,7 @@
               <button type="button" class="chip-button symptom" data-event-type="symptom">Symptôme</button>
               <button type="button" class="chip-button factor" data-event-type="factor">Facteur</button>
               <button type="button" class="chip-button" data-event-type="recurring">Évaluer mes éléments récurrents</button>
-              <button type="button" class="chip-button" data-event-type="daily">Mes douleurs, symptômes et facteurs quotidiens</button>
+              <button type="button" class="chip-button" data-event-type="daily">Mes symptômes et facteurs quotidiens</button>
             </div>
           </div>
           <div class="field">
@@ -140,7 +158,7 @@
 
         <div class="event-fields" id="dailyFields">
           <div class="card">
-            <h3>Mes douleurs, symptômes et facteurs quotidiens</h3>
+            <h3>Mes symptômes et facteurs quotidiens</h3>
             <p class="muted">Les éléments non évalués aujourd’hui apparaissent d’abord. Ceux déjà évalués restent accessibles pour une nouvelle saisie ou pour modifier la dernière évaluation du jour.</p>
             <div class="field">
               <label for="dailyHistorySelect">Ajouter un élément de l’historique</label>
@@ -288,12 +306,14 @@
         <div class="filters">
           <input type="date" id="chartFrom" aria-label="Date de début">
           <input type="date" id="chartTo" aria-label="Date de fin">
+          <button class="btn secondary small" id="chartToday">Aujourd’hui</button>
+          <button class="btn secondary small" id="chartCurrentMonth">Ce mois</button>
           <button class="btn secondary small" id="chartLast30">30 jours</button>
           <button class="btn secondary small" id="chartAll">Tout</button>
         </div>
       </div>
-      <div class="card"><h3>Intensité moyenne</h3><div class="chart" id="intensityChart"></div></div>
-      <div class="card"><h3>Nombre d’événements</h3><div class="chart" id="countChart"></div></div>
+      <div class="card"><h3>Intensité moyenne</h3><p class="chart-help">Le graphique entier tient dans l’écran. Appuie sur un point pour afficher sa valeur.</p><div class="chart" id="intensityChart"></div></div>
+      <div class="card"><h3>Nombre d’événements</h3><p class="chart-help">Les périodes sans saisie apparaissent avec une valeur nulle.</p><div class="chart" id="countChart"></div></div>
     </section>
 
     <section class="page" id="page-stats">
@@ -349,6 +369,112 @@
       </div>
     </section>
 
+
+    <section class="page" id="page-agenda">
+      <div class="card">
+        <h2>Agenda et ordonnances</h2>
+        <div id="agendaAlerts" class="agenda-alerts"></div>
+        <div class="actions" style="margin-top:12px">
+          <button type="button" class="btn secondary" id="notificationButton">Autoriser les notifications</button>
+        </div>
+        <p class="help">L’application vérifie les rappels lorsqu’elle est ouverte. Le bouton « Ajouter au calendrier » crée un fichier à ouvrir avec le calendrier du téléphone pour obtenir un rappel système même lorsque l’application est fermée.</p>
+        <div class="status" id="agendaStatus"></div>
+      </div>
+
+      <div class="grid">
+        <div class="card span-6">
+          <h3>Ajouter un rendez-vous</h3>
+          <form id="appointmentForm">
+            <input type="hidden" id="appointmentId">
+            <div class="field">
+              <label for="appointmentTitle">Rendez-vous</label>
+              <input type="text" id="appointmentTitle" placeholder="Ex. médecin généraliste" required>
+            </div>
+            <div class="field">
+              <label for="appointmentDateTime">Date et heure</label>
+              <input type="datetime-local" id="appointmentDateTime" required>
+            </div>
+            <div class="grid">
+              <div class="field span-6"><label for="appointmentProfessional">Professionnel</label><input type="text" id="appointmentProfessional" placeholder="Nom ou spécialité"></div>
+              <div class="field span-6"><label for="appointmentLocation">Lieu</label><input type="text" id="appointmentLocation" placeholder="Cabinet, hôpital…"></div>
+            </div>
+            <div class="field">
+              <label for="appointmentReminderDays">Rappel</label>
+              <select id="appointmentReminderDays">
+                <option value="-1">Aucun rappel</option>
+                <option value="0">Le jour même</option>
+                <option value="1" selected>1 jour avant</option>
+                <option value="3">3 jours avant</option>
+                <option value="7">7 jours avant</option>
+              </select>
+            </div>
+            <div class="field"><label for="appointmentNotes">Notes</label><textarea id="appointmentNotes" placeholder="Documents à apporter, questions…"></textarea></div>
+            <div class="actions">
+              <button class="btn" type="submit" id="appointmentSaveButton">Enregistrer le rendez-vous</button>
+              <button class="btn secondary" type="button" id="appointmentCancelButton" hidden>Annuler la modification</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card span-6">
+          <h3>Pharmacie et durée d’ordonnance</h3>
+          <form id="prescriptionForm">
+            <input type="hidden" id="prescriptionId">
+            <div class="field">
+              <label for="prescriptionMedication">Médicament ou ordonnance</label>
+              <input type="text" id="prescriptionMedication" placeholder="Ex. traitement X" required>
+            </div>
+            <div class="field"><label for="prescriptionPharmacy">Pharmacie</label><input type="text" id="prescriptionPharmacy" placeholder="Nom ou adresse"></div>
+            <div class="grid">
+              <div class="field span-6"><label for="prescriptionPickupDate">Date prévue de récupération</label><input type="date" id="prescriptionPickupDate" required></div>
+              <div class="field span-6">
+                <label for="prescriptionPickupReminderDays">Rappel pharmacie</label>
+                <select id="prescriptionPickupReminderDays">
+                  <option value="-1">Aucun rappel</option>
+                  <option value="0">Le jour même</option>
+                  <option value="1" selected>1 jour avant</option>
+                  <option value="3">3 jours avant</option>
+                  <option value="7">7 jours avant</option>
+                </select>
+              </div>
+              <div class="field span-6"><label for="prescriptionStartDate">Début de l’ordonnance</label><input type="date" id="prescriptionStartDate" required></div>
+              <div class="field span-6"><label for="prescriptionDurationDays">Durée en jours</label><input type="number" id="prescriptionDurationDays" min="1" step="1" value="30" required></div>
+              <div class="field span-12">
+                <label for="prescriptionEndReminderDays">Rappel avant la fin</label>
+                <select id="prescriptionEndReminderDays">
+                  <option value="-1">Aucun rappel</option>
+                  <option value="0">Le dernier jour</option>
+                  <option value="1">1 jour avant</option>
+                  <option value="3">3 jours avant</option>
+                  <option value="7" selected>7 jours avant</option>
+                  <option value="14">14 jours avant</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-title">Fin calculée</span>
+              <div id="prescriptionEndPreview" class="calculated-date">—</div>
+            </div>
+            <div class="field"><label for="prescriptionNotes">Notes</label><textarea id="prescriptionNotes" placeholder="Quantité, renouvellement, consignes…"></textarea></div>
+            <div class="actions">
+              <button class="btn" type="submit" id="prescriptionSaveButton">Enregistrer l’ordonnance</button>
+              <button class="btn secondary" type="button" id="prescriptionCancelButton" hidden>Annuler la modification</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Rendez-vous enregistrés</h3>
+        <div id="appointmentList" class="agenda-list"></div>
+      </div>
+
+      <div class="card">
+        <h3>Médicaments et ordonnances</h3>
+        <div id="prescriptionList" class="agenda-list"></div>
+      </div>
+    </section>
+
     <section class="page" id="page-qdsa-score">
       <div class="card">
         <h2>Scores QDSA</h2>
@@ -358,6 +484,36 @@
             <option value="">Toutes les douleurs</option>
           </select>
         </div>
+      </div>
+
+
+      <div class="card">
+        <h2>Adjectifs les plus utilisés</h2>
+        <div class="field">
+          <label for="qdsaRankingPeriod">Période du classement</label>
+          <select id="qdsaRankingPeriod">
+            <option value="7">7 derniers jours</option>
+            <option value="30" selected>30 derniers jours</option>
+            <option value="90">90 derniers jours</option>
+            <option value="all">Toutes les données</option>
+          </select>
+        </div>
+        <div class="summary-grid" id="qdsaRankingSummary"></div>
+        <div class="table-wrap" style="margin-top:14px">
+          <table>
+            <thead>
+              <tr>
+                <th>Rang</th>
+                <th>Adjectif</th>
+                <th>Famille</th>
+                <th>Saisies</th>
+                <th>Part des douleurs</th>
+              </tr>
+            </thead>
+            <tbody id="qdsaRankingTable"></tbody>
+          </table>
+        </div>
+        <p class="help">Un adjectif compte au maximum une fois dans une même saisie de douleur.</p>
       </div>
 
       <div class="card">
@@ -445,6 +601,7 @@
   <button class="tab" data-page="charts"><strong>⌁</strong>Graphiques</button>
   <button class="tab" data-page="stats"><strong>∑</strong>Stats</button>
   <button class="tab" data-page="links"><strong>↔</strong>Liens</button>
+  <button class="tab" data-page="agenda"><strong>◷</strong>Agenda</button>
   <button class="tab" data-page="qdsa-score"><strong>Q</strong>QDSA</button>
 </nav>
 
@@ -524,19 +681,61 @@ function loadEvents(){
 }
 function saveEvents(){localStorage.setItem(STORAGE_KEY,JSON.stringify(events));}
 
+function validDateOnly(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||""));}
+
+function normalizeAppointment(item){
+  if(!item||typeof item!=="object"||!normalizeText(item.title))return null;
+  const date=new Date(item.timestamp);
+  if(Number.isNaN(date.getTime()))return null;
+  return {
+    id:typeof item.id==="string"?item.id:uid(),
+    title:normalizeText(item.title),
+    timestamp:date.toISOString(),
+    professional:normalizeText(item.professional),
+    location:normalizeText(item.location),
+    reminderDays:Number.isFinite(Number(item.reminderDays))?Number(item.reminderDays):1,
+    notes:normalizeText(item.notes),
+    completed:Boolean(item.completed),
+    createdAt:item.createdAt||new Date().toISOString(),
+    updatedAt:item.updatedAt||new Date().toISOString()
+  };
+}
+
+function normalizePrescription(item){
+  if(!item||typeof item!=="object"||!normalizeText(item.medication))return null;
+  if(!validDateOnly(item.pickupDate)||!validDateOnly(item.startDate))return null;
+  return {
+    id:typeof item.id==="string"?item.id:uid(),
+    medication:normalizeText(item.medication),
+    pharmacy:normalizeText(item.pharmacy),
+    pickupDate:item.pickupDate,
+    pickupReminderDays:Number.isFinite(Number(item.pickupReminderDays))?Number(item.pickupReminderDays):1,
+    startDate:item.startDate,
+    durationDays:Math.max(1,Math.round(Number(item.durationDays)||1)),
+    endReminderDays:Number.isFinite(Number(item.endReminderDays))?Number(item.endReminderDays):7,
+    pickedUp:Boolean(item.pickedUp),
+    notes:normalizeText(item.notes),
+    createdAt:item.createdAt||new Date().toISOString(),
+    updatedAt:item.updatedAt||new Date().toISOString()
+  };
+}
+
 function defaultSettings(){
-  return {version:1,customZones:[],dailyItems:[]};
+  return {version:2,customZones:[],dailyItems:[],appointments:[],prescriptions:[],notifiedReminders:{}};
 }
 function loadSettings(){
   try{
     const parsed=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null");
     if(!parsed||typeof parsed!=="object")return defaultSettings();
     return {
-      version:1,
+      version:2,
       customZones:Array.isArray(parsed.customZones)?[...new Set(parsed.customZones.map(normalizeKey).filter(Boolean))]:[],
       dailyItems:Array.isArray(parsed.dailyItems)?parsed.dailyItems
         .filter(item=>item&&["pain","symptom","factor"].includes(item.type)&&normalizeKey(item.name))
-        .map(item=>({type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()})):[]
+        .map(item=>({type:item.type,name:normalizeKey(item.name),addedAt:item.addedAt||new Date().toISOString()})):[],
+      appointments:Array.isArray(parsed.appointments)?parsed.appointments.map(normalizeAppointment).filter(Boolean):[],
+      prescriptions:Array.isArray(parsed.prescriptions)?parsed.prescriptions.map(normalizePrescription).filter(Boolean):[],
+      notifiedReminders:parsed.notifiedReminders&&typeof parsed.notifiedReminders==="object"?parsed.notifiedReminders:{}
     };
   }catch{return defaultSettings()}
 }
@@ -911,7 +1110,7 @@ function deleteEvent(id){askConfirmation("Supprimer cet événement","Cette supp
 function showPage(name){
   $$(".page").forEach(page=>page.classList.toggle("active",page.id===`page-${name}`));
   $$(".tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.page===name));
-  if(name==="journal")renderJournal();if(name==="charts")renderCharts();if(name==="stats")renderStats();if(name==="links")renderLinks();if(name==="qdsa-score")renderQDSAScore();
+  if(name==="journal")renderJournal();if(name==="charts")renderCharts();if(name==="stats")renderStats();if(name==="links")renderLinks();if(name==="agenda")renderAgenda();if(name==="qdsa-score")renderQDSAScore();
   history.replaceState(null,"",`#${name}`);
 }
 
@@ -981,39 +1180,156 @@ function chartEvents(mode,name){
   const from=$("chartFrom").value?startOfDay(new Date(`${$("chartFrom").value}T00:00:00`)).getTime():-Infinity,to=$("chartTo").value?endOfDay(new Date(`${$("chartTo").value}T00:00:00`)).getTime():Infinity;
   return events.filter(e=>eventMatchesTarget(e,mode,name)&&new Date(e.timestamp).getTime()>=from&&new Date(e.timestamp).getTime()<=to).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
 }
-function aggregate(list,grouping){
+function chartRangeDates(){
+  const from=$("chartFrom").value?startOfDay(new Date(`${$("chartFrom").value}T00:00:00`)):null;
+  const to=$("chartTo").value?endOfDay(new Date(`${$("chartTo").value}T00:00:00`)):null;
+  return {from,to};
+}
+
+function aggregate(list,grouping,fromDate=null,toDate=null){
   const map=new Map();
+  const ensure=(key,label,sort)=>{
+    if(!map.has(key))map.set(key,{label,sort,total:0,count:0});
+  };
+
   list.forEach(e=>{
     const d=new Date(e.timestamp);let key,label,sort;
-    if(grouping==="hour"){const h=d.getHours();key=String(h);label=`${String(h).padStart(2,"0")} h`;sort=h}
-    else if(grouping==="day"){key=localDateValue(d);label=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short"}).format(d);sort=startOfDay(d).getTime()}
-    else{key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;label=new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(d);sort=new Date(d.getFullYear(),d.getMonth(),1).getTime()}
-    if(!map.has(key))map.set(key,{label,sort,total:0,count:0});const b=map.get(key);b.total+=e.intensity;b.count++;
+    if(grouping==="hour"){
+      const h=d.getHours();key=String(h);label=`${String(h).padStart(2,"0")} h`;sort=h;
+    }else if(grouping==="day"){
+      key=localDateValue(d);label=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short"}).format(d);sort=startOfDay(d).getTime();
+    }else{
+      key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;label=new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(d);sort=new Date(d.getFullYear(),d.getMonth(),1).getTime();
+    }
+    ensure(key,label,sort);
+    const bucket=map.get(key);bucket.total+=e.intensity;bucket.count++;
   });
-  if(grouping==="hour")for(let h=0;h<24;h++)if(!map.has(String(h)))map.set(String(h),{label:`${String(h).padStart(2,"0")} h`,sort:h,total:0,count:0});
-  return [...map.values()].sort((a,b)=>a.sort-b.sort).map(b=>({label:b.label,average:b.count?b.total/b.count:null,count:b.count}));
+
+  if(grouping==="hour"){
+    for(let h=0;h<24;h++)ensure(String(h),`${String(h).padStart(2,"0")} h`,h);
+  }else if(grouping==="day"&&fromDate&&toDate){
+    const days=Math.round((startOfDay(toDate)-startOfDay(fromDate))/86400000)+1;
+    if(days>0&&days<=370){
+      const cursor=startOfDay(fromDate);
+      for(let i=0;i<days;i++){
+        const key=localDateValue(cursor);
+        ensure(key,new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short"}).format(cursor),cursor.getTime());
+        cursor.setDate(cursor.getDate()+1);
+      }
+    }
+  }else if(grouping==="month"&&fromDate&&toDate){
+    const cursor=new Date(fromDate.getFullYear(),fromDate.getMonth(),1);
+    const limit=new Date(toDate.getFullYear(),toDate.getMonth(),1);
+    let guard=0;
+    while(cursor<=limit&&guard<121){
+      const key=`${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,"0")}`;
+      ensure(key,new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(cursor),cursor.getTime());
+      cursor.setMonth(cursor.getMonth()+1);guard++;
+    }
+  }
+
+  return [...map.values()].sort((a,b)=>a.sort-b.sort).map(bucket=>({
+    label:bucket.label,
+    average:bucket.count?bucket.total/bucket.count:null,
+    count:bucket.count
+  }));
 }
+
+function chartDimensions(container){
+  const measured=Math.floor(container.getBoundingClientRect().width||container.parentElement?.getBoundingClientRect().width||720);
+  const width=Math.max(300,measured);
+  const compact=width<520;
+  return {
+    width,
+    height:compact?245:285,
+    compact,
+    margin:{left:compact?34:42,right:compact?8:18,top:18,bottom:compact?43:52}
+  };
+}
+
+function chartLabelVisible(index,length,maxLabels){
+  if(length<=maxLabels)return true;
+  if(index===0||index===length-1)return true;
+  const step=Math.ceil((length-1)/(maxLabels-1));
+  return index%step===0;
+}
+
 function renderLineChart(container,data){
   if(!data.length||data.every(d=>d.average===null)){container.innerHTML=`<div class="empty">Pas assez de données.</div>`;return}
-  const width=Math.max(560,data.length*54),height=270,m={left:42,right:18,top:18,bottom:54},iw=width-m.left-m.right,ih=height-m.top-m.bottom,x=i=>m.left+(data.length===1?iw/2:i*iw/(data.length-1)),y=v=>m.top+ih-(v/10)*ih;
-  const grid=[0,2,4,6,8,10].map(t=>`<line class="chart-grid" x1="${m.left}" x2="${width-m.right}" y1="${y(t)}" y2="${y(t)}"></line><text class="chart-axis" x="${m.left-8}" y="${y(t)+4}" text-anchor="end">${t}</text>`).join("");
-  const valid=data.map((d,i)=>({...d,i})).filter(d=>d.average!==null),path=valid.map((d,j)=>`${j?"L":"M"} ${x(d.i)} ${y(d.average)}`).join(" "),points=valid.map(d=>`<circle class="chart-point" cx="${x(d.i)}" cy="${y(d.average)}" r="4"><title>${escapeHtml(d.label)} : ${d.average.toFixed(1)}</title></circle>`).join("");
-  const labels=data.map((d,i)=>{const show=data.length<=12||i%Math.ceil(data.length/12)===0||i===data.length-1;return show?`<text class="chart-axis" x="${x(i)}" y="${height-20}" text-anchor="middle">${escapeHtml(d.label)}</text>`:""}).join("");
-  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}">${grid}<path class="chart-line" d="${path}"></path>${points}${labels}</svg>`;
+  const {width,height,compact,margin:m}=chartDimensions(container);
+  const iw=width-m.left-m.right,ih=height-m.top-m.bottom;
+  const x=i=>m.left+(data.length===1?iw/2:i*iw/(data.length-1));
+  const y=value=>m.top+ih-(value/10)*ih;
+  const maxLabels=compact?6:12;
+
+  const grid=[0,2,4,6,8,10].map(t=>`<line class="chart-grid" x1="${m.left}" x2="${width-m.right}" y1="${y(t)}" y2="${y(t)}"></line><text class="chart-axis" x="${m.left-7}" y="${y(t)+4}" text-anchor="end">${t}</text>`).join("");
+
+  let previousValid=-2;
+  const pathParts=[];
+  data.forEach((item,index)=>{
+    if(item.average===null){previousValid=-2;return}
+    pathParts.push(`${previousValid===index-1?"L":"M"} ${x(index)} ${y(item.average)}`);
+    previousValid=index;
+  });
+
+  const points=data.map((item,index)=>{
+    if(item.average===null)return "";
+    const value=item.average.toFixed(1);
+    return `<g data-chart-value="${value}/10" data-chart-label="${escapeHtml(item.label)}">
+      <circle class="chart-hit" cx="${x(index)}" cy="${y(item.average)}" r="${compact?13:11}"></circle>
+      <circle class="chart-point" cx="${x(index)}" cy="${y(item.average)}" r="${compact?3.5:4}"><title>${escapeHtml(item.label)} : ${value}/10</title></circle>
+    </g>`;
+  }).join("");
+
+  const labels=data.map((item,index)=>chartLabelVisible(index,data.length,maxLabels)
+    ? `<text class="chart-axis" x="${x(index)}" y="${height-17}" text-anchor="middle">${escapeHtml(item.label)}</text>`
+    : ""
+  ).join("");
+
+  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Graphique de l’intensité moyenne">${grid}<path class="chart-line" d="${pathParts.join(" ")}"></path>${points}${labels}</svg><div class="chart-readout">Appuie sur un point pour afficher sa valeur.</div>`;
 }
+
 function renderBarChart(container,data){
-  if(!data.length||data.every(d=>!d.count)){container.innerHTML=`<div class="empty">Pas assez de données.</div>`;return}
-  const max=Math.max(1,...data.map(d=>d.count)),width=Math.max(560,data.length*54),height=270,m={left:42,right:18,top:18,bottom:54},iw=width-m.left-m.right,ih=height-m.top-m.bottom,band=iw/data.length,bw=Math.max(8,band*.62),y=v=>m.top+ih-(v/max)*ih;
-  const ticks=[0,Math.ceil(max/4),Math.ceil(max/2),Math.ceil(max*3/4),max].filter((v,i,a)=>a.indexOf(v)===i);
-  const grid=ticks.map(t=>`<line class="chart-grid" x1="${m.left}" x2="${width-m.right}" y1="${y(t)}" y2="${y(t)}"></line><text class="chart-axis" x="${m.left-8}" y="${y(t)+4}" text-anchor="end">${t}</text>`).join("");
-  const bars=data.map((d,i)=>{const x=m.left+i*band+(band-bw)/2,h=ih-(y(d.count)-m.top);return `<rect class="chart-bar" x="${x}" y="${y(d.count)}" width="${bw}" height="${h}" rx="4"><title>${escapeHtml(d.label)} : ${d.count}</title></rect>`}).join("");
-  const labels=data.map((d,i)=>{const show=data.length<=12||i%Math.ceil(data.length/12)===0||i===data.length-1,x=m.left+i*band+band/2;return show?`<text class="chart-axis" x="${x}" y="${height-20}" text-anchor="middle">${escapeHtml(d.label)}</text>`:""}).join("");
-  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}">${grid}${bars}${labels}</svg>`;
+  if(!data.length){container.innerHTML=`<div class="empty">Pas assez de données.</div>`;return}
+  const {width,height,compact,margin:m}=chartDimensions(container);
+  const max=Math.max(1,...data.map(item=>item.count));
+  const iw=width-m.left-m.right,ih=height-m.top-m.bottom;
+  const band=iw/Math.max(data.length,1);
+  const barWidth=Math.max(2,Math.min(compact?16:26,band*.68));
+  const y=value=>m.top+ih-(value/max)*ih;
+  const maxLabels=compact?6:12;
+
+  const ticks=[0,Math.ceil(max/4),Math.ceil(max/2),Math.ceil(max*3/4),max].filter((value,index,array)=>array.indexOf(value)===index);
+  const grid=ticks.map(t=>`<line class="chart-grid" x1="${m.left}" x2="${width-m.right}" y1="${y(t)}" y2="${y(t)}"></line><text class="chart-axis" x="${m.left-7}" y="${y(t)+4}" text-anchor="end">${t}</text>`).join("");
+
+  const bars=data.map((item,index)=>{
+    const center=m.left+index*band+band/2;
+    const x=center-barWidth/2;
+    const top=y(item.count);
+    const visibleHeight=Math.max(item.count?2:0,ih-(top-m.top));
+    return `<g data-chart-value="${item.count}" data-chart-label="${escapeHtml(item.label)}">
+      <rect class="chart-hit" x="${m.left+index*band}" y="${m.top}" width="${band}" height="${ih}"></rect>
+      <rect class="chart-bar" x="${x}" y="${item.count?top:m.top+ih}" width="${barWidth}" height="${visibleHeight}" rx="${Math.min(4,barWidth/3)}"><title>${escapeHtml(item.label)} : ${item.count}</title></rect>
+    </g>`;
+  }).join("");
+
+  const labels=data.map((item,index)=>{
+    const center=m.left+index*band+band/2;
+    return chartLabelVisible(index,data.length,maxLabels)
+      ? `<text class="chart-axis" x="${center}" y="${height-17}" text-anchor="middle">${escapeHtml(item.label)}</text>`
+      : "";
+  }).join("");
+
+  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Graphique du nombre d’événements">${grid}${bars}${labels}</svg><div class="chart-readout">Appuie sur une barre pour afficher sa valeur.</div>`;
 }
+
 function renderCharts(){
   updateTargetControl($("chartTargetMode"),$("chartTargetName"));
-  const list=chartEvents($("chartTargetMode").value,$("chartTargetName").value),data=aggregate(list,$("chartGrouping").value);
-  renderLineChart($("intensityChart"),data);renderBarChart($("countChart"),data);
+  const range=chartRangeDates();
+  const list=chartEvents($("chartTargetMode").value,$("chartTargetName").value);
+  const data=aggregate(list,$("chartGrouping").value,range.from,range.to);
+  renderLineChart($("intensityChart"),data);
+  renderBarChart($("countChart"),data);
 }
 
 function periodRange(value,period){
@@ -1199,6 +1515,503 @@ function renderLinks(){
   }).join(""):`<tr><td colspan="7">Aucun facteur enregistré.</td></tr>`;
 }
 
+
+function dateOnlyAt(value,hour=9){
+  return new Date(`${value}T${String(hour).padStart(2,"0")}:00:00`);
+}
+
+function addDays(date,days){
+  const result=new Date(date);
+  result.setDate(result.getDate()+days);
+  return result;
+}
+
+function prescriptionEndDate(item){
+  return addDays(dateOnlyAt(item.startDate,12),Math.max(1,Number(item.durationDays)||1)-1);
+}
+
+function formatLongDate(date){
+  return new Intl.DateTimeFormat("fr-FR",{dateStyle:"long"}).format(date);
+}
+
+function formatDateTime(date){
+  return new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(date);
+}
+
+function daysUntil(date){
+  const today=startOfDay(new Date()).getTime();
+  const target=startOfDay(date).getTime();
+  return Math.round((target-today)/86400000);
+}
+
+function reminderText(days){
+  if(days<0)return "sans rappel";
+  if(days===0)return "le jour même";
+  return `${days} jour${days>1?"s":""} avant`;
+}
+
+function resetAppointmentForm(){
+  $("appointmentForm").reset();
+  $("appointmentId").value="";
+  const next=new Date();
+  next.setHours(next.getHours()+1,0,0,0);
+  $("appointmentDateTime").value=localDateTimeValue(next);
+  $("appointmentReminderDays").value="1";
+  $("appointmentSaveButton").textContent="Enregistrer le rendez-vous";
+  $("appointmentCancelButton").hidden=true;
+}
+
+function resetPrescriptionForm(){
+  $("prescriptionForm").reset();
+  $("prescriptionId").value="";
+  $("prescriptionPickupDate").value=localDateValue();
+  $("prescriptionStartDate").value=localDateValue();
+  $("prescriptionDurationDays").value="30";
+  $("prescriptionPickupReminderDays").value="1";
+  $("prescriptionEndReminderDays").value="7";
+  $("prescriptionSaveButton").textContent="Enregistrer l’ordonnance";
+  $("prescriptionCancelButton").hidden=true;
+  updatePrescriptionEndPreview();
+}
+
+function updatePrescriptionEndPreview(){
+  const start=$("prescriptionStartDate").value;
+  const duration=Math.max(1,Math.round(Number($("prescriptionDurationDays").value)||0));
+  if(!validDateOnly(start)||!duration){
+    $("prescriptionEndPreview").textContent="—";
+    return;
+  }
+  const end=addDays(dateOnlyAt(start,12),duration-1);
+  $("prescriptionEndPreview").textContent=`${formatLongDate(end)} · ${duration} jour${duration>1?"s":""}`;
+}
+
+function appointmentFromForm(){
+  return normalizeAppointment({
+    id:$("appointmentId").value||uid(),
+    title:$("appointmentTitle").value,
+    timestamp:new Date($("appointmentDateTime").value).toISOString(),
+    professional:$("appointmentProfessional").value,
+    location:$("appointmentLocation").value,
+    reminderDays:Number($("appointmentReminderDays").value),
+    notes:$("appointmentNotes").value,
+    completed:$("appointmentId").value
+      ? Boolean(appSettings.appointments.find(item=>item.id===$("appointmentId").value)?.completed)
+      : false,
+    createdAt:$("appointmentId").value
+      ? appSettings.appointments.find(item=>item.id===$("appointmentId").value)?.createdAt
+      : new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  });
+}
+
+function prescriptionFromForm(){
+  return normalizePrescription({
+    id:$("prescriptionId").value||uid(),
+    medication:$("prescriptionMedication").value,
+    pharmacy:$("prescriptionPharmacy").value,
+    pickupDate:$("prescriptionPickupDate").value,
+    pickupReminderDays:Number($("prescriptionPickupReminderDays").value),
+    startDate:$("prescriptionStartDate").value,
+    durationDays:Number($("prescriptionDurationDays").value),
+    endReminderDays:Number($("prescriptionEndReminderDays").value),
+    pickedUp:$("prescriptionId").value
+      ? Boolean(appSettings.prescriptions.find(item=>item.id===$("prescriptionId").value)?.pickedUp)
+      : false,
+    notes:$("prescriptionNotes").value,
+    createdAt:$("prescriptionId").value
+      ? appSettings.prescriptions.find(item=>item.id===$("prescriptionId").value)?.createdAt
+      : new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  });
+}
+
+function editAppointment(id){
+  const item=appSettings.appointments.find(entry=>entry.id===id);
+  if(!item)return;
+  $("appointmentId").value=item.id;
+  $("appointmentTitle").value=item.title;
+  $("appointmentDateTime").value=localDateTimeValue(new Date(item.timestamp));
+  $("appointmentProfessional").value=item.professional||"";
+  $("appointmentLocation").value=item.location||"";
+  $("appointmentReminderDays").value=String(item.reminderDays);
+  $("appointmentNotes").value=item.notes||"";
+  $("appointmentSaveButton").textContent="Enregistrer les modifications";
+  $("appointmentCancelButton").hidden=false;
+  showPage("agenda");
+  $("appointmentTitle").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function editPrescription(id){
+  const item=appSettings.prescriptions.find(entry=>entry.id===id);
+  if(!item)return;
+  $("prescriptionId").value=item.id;
+  $("prescriptionMedication").value=item.medication;
+  $("prescriptionPharmacy").value=item.pharmacy||"";
+  $("prescriptionPickupDate").value=item.pickupDate;
+  $("prescriptionPickupReminderDays").value=String(item.pickupReminderDays);
+  $("prescriptionStartDate").value=item.startDate;
+  $("prescriptionDurationDays").value=String(item.durationDays);
+  $("prescriptionEndReminderDays").value=String(item.endReminderDays);
+  $("prescriptionNotes").value=item.notes||"";
+  $("prescriptionSaveButton").textContent="Enregistrer les modifications";
+  $("prescriptionCancelButton").hidden=false;
+  updatePrescriptionEndPreview();
+  showPage("agenda");
+  $("prescriptionMedication").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function deleteAppointment(id){
+  askConfirmation("Supprimer ce rendez-vous","Le rendez-vous sera retiré de l’agenda.",()=>{
+    appSettings.appointments=appSettings.appointments.filter(item=>item.id!==id);
+    saveSettings();
+    renderAgenda();
+  });
+}
+
+function deletePrescription(id){
+  askConfirmation("Supprimer cette ordonnance","Le rappel de pharmacie et la durée calculée seront supprimés.",()=>{
+    appSettings.prescriptions=appSettings.prescriptions.filter(item=>item.id!==id);
+    saveSettings();
+    renderAgenda();
+  });
+}
+
+function toggleAppointmentCompleted(id){
+  const item=appSettings.appointments.find(entry=>entry.id===id);
+  if(!item)return;
+  item.completed=!item.completed;
+  item.updatedAt=new Date().toISOString();
+  saveSettings();
+  renderAgenda();
+}
+
+function togglePrescriptionPickedUp(id){
+  const item=appSettings.prescriptions.find(entry=>entry.id===id);
+  if(!item)return;
+  item.pickedUp=!item.pickedUp;
+  item.updatedAt=new Date().toISOString();
+  saveSettings();
+  renderAgenda();
+}
+
+function appointmentDisplayStatus(item){
+  if(item.completed)return {label:"Réalisé",className:"good",cardClass:"done"};
+  const now=Date.now();
+  const timestamp=new Date(item.timestamp).getTime();
+  if(timestamp<now)return {label:"Rendez-vous dépassé",className:"overdue",cardClass:"overdue"};
+  const trigger=timestamp-Math.max(0,item.reminderDays)*86400000;
+  if(item.reminderDays>=0&&now>=trigger)return {label:"Rappel actif",className:"warning",cardClass:"due"};
+  return {label:"À venir",className:"good",cardClass:""};
+}
+
+function prescriptionDisplayStatus(item){
+  const now=Date.now();
+  const pickup=dateOnlyAt(item.pickupDate,9);
+  const end=prescriptionEndDate(item);
+  const remaining=daysUntil(end);
+  if(end.getTime()<startOfDay(new Date()).getTime())return {label:`Terminée depuis ${Math.abs(remaining)} j`,className:"overdue",cardClass:"overdue"};
+  if(!item.pickedUp&&pickup.getTime()<now)return {label:"À récupérer",className:"overdue",cardClass:"overdue"};
+  if(remaining<=Math.max(0,item.endReminderDays)&&item.endReminderDays>=0)return {label:`Fin dans ${remaining} j`,className:"warning",cardClass:"due"};
+  if(item.pickedUp)return {label:`Récupéré · ${remaining} j restants`,className:"good",cardClass:""};
+  return {label:`Prévu · ${remaining} j restants`,className:"good",cardClass:""};
+}
+
+function renderAppointments(){
+  const container=$("appointmentList");
+  const items=[...appSettings.appointments].sort((a,b)=>{
+    if(a.completed!==b.completed)return a.completed?1:-1;
+    return new Date(a.timestamp)-new Date(b.timestamp);
+  });
+  if(!items.length){
+    container.innerHTML=`<div class="empty">Aucun rendez-vous enregistré.</div>`;
+    return;
+  }
+  container.innerHTML=items.map(item=>{
+    const status=appointmentDisplayStatus(item);
+    const details=[item.professional,item.location].filter(Boolean).join(" · ");
+    return `<article class="agenda-card ${status.cardClass}">
+      <div class="agenda-card-head">
+        <div>
+          <div class="agenda-title">${escapeHtml(item.title)}</div>
+          <div class="agenda-meta">${escapeHtml(formatDateTime(new Date(item.timestamp)))}</div>
+          ${details?`<div class="agenda-meta">${escapeHtml(details)}</div>`:""}
+          <div class="agenda-meta">Rappel : ${escapeHtml(reminderText(item.reminderDays))}</div>
+        </div>
+        <div class="agenda-status ${status.className}">${escapeHtml(status.label)}</div>
+      </div>
+      ${item.notes?`<div class="event-line">${escapeHtml(item.notes)}</div>`:""}
+      <div class="agenda-actions">
+        <button type="button" class="btn small" data-appointment-toggle="${item.id}">${item.completed?"Réouvrir":"Marquer réalisé"}</button>
+        <button type="button" class="btn secondary small" data-appointment-calendar="${item.id}">Ajouter au calendrier</button>
+        <button type="button" class="btn secondary small" data-appointment-edit="${item.id}">Modifier</button>
+        <button type="button" class="btn danger small" data-appointment-delete="${item.id}">Supprimer</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function renderPrescriptions(){
+  const container=$("prescriptionList");
+  const items=[...appSettings.prescriptions].sort((a,b)=>{
+    const aEnd=prescriptionEndDate(a).getTime();
+    const bEnd=prescriptionEndDate(b).getTime();
+    if(aEnd!==bEnd)return aEnd-bEnd;
+    return dateOnlyAt(a.pickupDate)-dateOnlyAt(b.pickupDate);
+  });
+  if(!items.length){
+    container.innerHTML=`<div class="empty">Aucune ordonnance enregistrée.</div>`;
+    return;
+  }
+  container.innerHTML=items.map(item=>{
+    const status=prescriptionDisplayStatus(item);
+    const end=prescriptionEndDate(item);
+    const remaining=daysUntil(end);
+    return `<article class="agenda-card prescription ${status.cardClass}">
+      <div class="agenda-card-head">
+        <div>
+          <div class="agenda-title">${escapeHtml(item.medication)}</div>
+          <div class="agenda-meta">Pharmacie : ${escapeHtml(formatLongDate(dateOnlyAt(item.pickupDate,12)))}${item.pharmacy?` · ${escapeHtml(item.pharmacy)}`:""}</div>
+          <div class="agenda-meta">Ordonnance : ${escapeHtml(formatLongDate(dateOnlyAt(item.startDate,12)))} → ${escapeHtml(formatLongDate(end))} (${item.durationDays} jours)</div>
+          <div class="agenda-meta">Rappels : pharmacie ${escapeHtml(reminderText(item.pickupReminderDays))} · fin ${escapeHtml(reminderText(item.endReminderDays))}</div>
+        </div>
+        <div class="agenda-status ${status.className}">${escapeHtml(status.label)}</div>
+      </div>
+      ${item.notes?`<div class="event-line">${escapeHtml(item.notes)}</div>`:""}
+      <div class="agenda-actions">
+        <button type="button" class="btn small" data-prescription-toggle="${item.id}">${item.pickedUp?"Marquer non récupéré":"Marquer récupéré"}</button>
+        <button type="button" class="btn secondary small" data-prescription-calendar="${item.id}">Ajouter au calendrier</button>
+        <button type="button" class="btn secondary small" data-prescription-edit="${item.id}">Modifier</button>
+        <button type="button" class="btn danger small" data-prescription-delete="${item.id}">Supprimer</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function agendaReminderItems(){
+  const now=Date.now();
+  const reminders=[];
+
+  appSettings.appointments.forEach(item=>{
+    if(item.completed||item.reminderDays<0)return;
+    const appointmentDate=new Date(item.timestamp);
+    const trigger=appointmentDate.getTime()-item.reminderDays*86400000;
+    if(now>=trigger){
+      const overdue=now>appointmentDate.getTime();
+      reminders.push({
+        key:`appointment:${item.id}:${item.timestamp}`,
+        title:overdue?"Rendez-vous dépassé":`Rendez-vous : ${item.title}`,
+        body:`${formatDateTime(appointmentDate)}${item.location?` · ${item.location}`:""}`,
+        severity:overdue?"overdue":"warning",
+        when:appointmentDate.getTime()
+      });
+    }
+  });
+
+  appSettings.prescriptions.forEach(item=>{
+    const pickup=dateOnlyAt(item.pickupDate,9);
+    if(!item.pickedUp&&item.pickupReminderDays>=0){
+      const trigger=pickup.getTime()-item.pickupReminderDays*86400000;
+      if(now>=trigger){
+        reminders.push({
+          key:`pickup:${item.id}:${item.pickupDate}`,
+          title:`Récupérer : ${item.medication}`,
+          body:`${formatLongDate(pickup)}${item.pharmacy?` · ${item.pharmacy}`:""}`,
+          severity:now>pickup.getTime()?"overdue":"warning",
+          when:pickup.getTime()
+        });
+      }
+    }
+
+    if(item.endReminderDays>=0){
+      const end=prescriptionEndDate(item);
+      const trigger=end.getTime()-item.endReminderDays*86400000;
+      if(now>=trigger){
+        const remaining=daysUntil(end);
+        reminders.push({
+          key:`end:${item.id}:${item.startDate}:${item.durationDays}`,
+          title:remaining<0?`Ordonnance terminée : ${item.medication}`:`Fin prochaine : ${item.medication}`,
+          body:remaining<0?`Terminée depuis ${Math.abs(remaining)} jour${Math.abs(remaining)>1?"s":""}.`:`${remaining} jour${remaining>1?"s":""} restant${remaining>1?"s":""}.`,
+          severity:remaining<0?"overdue":"warning",
+          when:end.getTime()
+        });
+      }
+    }
+  });
+
+  return reminders.sort((a,b)=>a.when-b.when);
+}
+
+function renderAgendaAlerts(){
+  const reminders=agendaReminderItems();
+  $("agendaAlerts").innerHTML=reminders.length
+    ? reminders.map(item=>`<div class="agenda-alert ${item.severity}"><div class="agenda-alert-title">${escapeHtml(item.title)}</div><div class="agenda-alert-body">${escapeHtml(item.body)}</div></div>`).join("")
+    : `<div class="empty">Aucun rappel actif.</div>`;
+}
+
+function updateNotificationButton(){
+  const button=$("notificationButton");
+  if(!("Notification" in window)){
+    button.textContent="Notifications non disponibles";
+    button.disabled=true;
+    return;
+  }
+  if(Notification.permission==="granted"){
+    button.textContent="Notifications autorisées";
+    button.disabled=true;
+  }else if(Notification.permission==="denied"){
+    button.textContent="Notifications bloquées dans Chrome";
+    button.disabled=true;
+  }else{
+    button.textContent="Autoriser les notifications";
+    button.disabled=false;
+  }
+}
+
+async function requestNotifications(){
+  if(!("Notification" in window)){
+    setStatus($("agendaStatus"),"Les notifications ne sont pas disponibles dans ce navigateur.",5000);
+    return;
+  }
+  const permission=await Notification.requestPermission();
+  updateNotificationButton();
+  if(permission==="granted"){
+    setStatus($("agendaStatus"),"Notifications autorisées. Elles seront vérifiées lorsque l’application est ouverte.");
+    checkAgendaNotifications();
+  }else{
+    setStatus($("agendaStatus"),"Autorisation refusée. Les rappels restent visibles dans l’onglet Agenda.",5000);
+  }
+}
+
+async function checkAgendaNotifications(){
+  if(!("Notification" in window)||Notification.permission!=="granted")return;
+  const pending=agendaReminderItems().filter(item=>!appSettings.notifiedReminders[item.key]);
+  if(!pending.length)return;
+
+  let registration=null;
+  if("serviceWorker" in navigator){
+    try{registration=await navigator.serviceWorker.ready}catch{}
+  }
+
+  for(const item of pending){
+    try{
+      if(registration){
+        await registration.showNotification(item.title,{body:item.body,icon:"./icon-192.png",badge:"./icon-192.png",tag:item.key});
+      }else{
+        new Notification(item.title,{body:item.body,icon:"./icon-192.png",tag:item.key});
+      }
+      appSettings.notifiedReminders[item.key]=new Date().toISOString();
+    }catch{}
+  }
+  saveSettings();
+}
+
+function renderAgenda(){
+  renderAgendaAlerts();
+  renderAppointments();
+  renderPrescriptions();
+  updateNotificationButton();
+  checkAgendaNotifications();
+}
+
+function icsEscape(value){
+  return String(value||"").replaceAll("\\","\\\\").replaceAll(";","\\;").replaceAll(",","\\,").replace(/\r?\n/g,"\\n");
+}
+
+function icsUtc(date){
+  return date.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+}
+
+function icsAlarm(days){
+  if(days<0)return "";
+  const trigger=days===0?"-PT1H":`-P${days}D`;
+  return `BEGIN:VALARM\r\nTRIGGER:${trigger}\r\nACTION:DISPLAY\r\nDESCRIPTION:Rappel\r\nEND:VALARM\r\n`;
+}
+
+function downloadTextFile(filename,text,type){
+  const blob=new Blob([text],{type});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download=filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function appointmentICS(id){
+  const item=appSettings.appointments.find(entry=>entry.id===id);
+  if(!item)return;
+  const start=new Date(item.timestamp);
+  const end=new Date(start.getTime()+60*60000);
+  const description=[item.professional,item.notes].filter(Boolean).join("\\n");
+  const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Suivi santé//FR\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nUID:${item.id}@suivi-sante\r\nDTSTAMP:${icsUtc(new Date())}\r\nDTSTART:${icsUtc(start)}\r\nDTEND:${icsUtc(end)}\r\nSUMMARY:${icsEscape(item.title)}\r\nLOCATION:${icsEscape(item.location)}\r\nDESCRIPTION:${icsEscape(description)}\r\n${icsAlarm(item.reminderDays)}END:VEVENT\r\nEND:VCALENDAR\r\n`;
+  downloadTextFile(`rendez-vous-${localDateValue(start)}.ics`,ics,"text/calendar;charset=utf-8");
+}
+
+function prescriptionICS(id){
+  const item=appSettings.prescriptions.find(entry=>entry.id===id);
+  if(!item)return;
+  const pickup=dateOnlyAt(item.pickupDate,9);
+  const pickupEnd=new Date(pickup.getTime()+30*60000);
+  const endDate=prescriptionEndDate(item);
+  endDate.setHours(9,0,0,0);
+  const endEventEnd=new Date(endDate.getTime()+30*60000);
+  const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Suivi santé//FR\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nUID:pickup-${item.id}@suivi-sante\r\nDTSTAMP:${icsUtc(new Date())}\r\nDTSTART:${icsUtc(pickup)}\r\nDTEND:${icsUtc(pickupEnd)}\r\nSUMMARY:${icsEscape(`Récupérer ${item.medication}`)}\r\nLOCATION:${icsEscape(item.pharmacy)}\r\nDESCRIPTION:${icsEscape(item.notes)}\r\n${icsAlarm(item.pickupReminderDays)}END:VEVENT\r\nBEGIN:VEVENT\r\nUID:end-${item.id}@suivi-sante\r\nDTSTAMP:${icsUtc(new Date())}\r\nDTSTART:${icsUtc(endDate)}\r\nDTEND:${icsUtc(endEventEnd)}\r\nSUMMARY:${icsEscape(`Fin de l’ordonnance : ${item.medication}`)}\r\nDESCRIPTION:${icsEscape(`Durée : ${item.durationDays} jours. ${item.notes||""}`)}\r\n${icsAlarm(item.endReminderDays)}END:VEVENT\r\nEND:VCALENDAR\r\n`;
+  downloadTextFile(`ordonnance-${localDateValue(pickup)}.ics`,ics,"text/calendar;charset=utf-8");
+}
+
+function qdsaWordInfo(adjective){
+  const key=normalizeKey(adjective);
+  for(const group of QDSA_GROUPS){
+    const word=group.words.find(item=>normalizeKey(item)===key);
+    if(word)return {word,code:group.code,label:group.label};
+  }
+  return {word:adjective,code:"—",label:"Non classé"};
+}
+
+function renderQDSARanking(){
+  const painName=$("qdsaScorePainName").value;
+  const period=$("qdsaRankingPeriod").value;
+  let list=events.filter(event=>event.type==="pain"&&(!painName||event.name===painName));
+
+  if(period!=="all"){
+    const days=Number(period);
+    const start=startOfDay(new Date());
+    start.setDate(start.getDate()-(days-1));
+    list=list.filter(event=>new Date(event.timestamp)>=start);
+  }
+
+  const counts=new Map();
+  list.forEach(event=>{
+    const unique=new Set((event.adjectives||[]).map(normalizeKey).filter(Boolean));
+    unique.forEach(adjective=>counts.set(adjective,(counts.get(adjective)||0)+1));
+  });
+
+  const rows=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"fr"));
+  const totalSelections=rows.reduce((sum,row)=>sum+row[1],0);
+  const periodLabel=period==="all"?"Toutes":`${period} j`;
+
+  $("qdsaRankingSummary").innerHTML=[
+    ["Période",periodLabel],
+    ["Saisies de douleur",list.length],
+    ["Adjectifs différents",rows.length],
+    ["Sélections totales",totalSelections]
+  ].map(([label,value])=>`<div class="metric"><span class="metric-value">${value}</span><span class="metric-label">${label}</span></div>`).join("");
+
+  $("qdsaRankingTable").innerHTML=rows.length
+    ? rows.map(([adjective,count],index)=>{
+        const info=qdsaWordInfo(adjective);
+        const percentage=Math.round(count/Math.max(list.length,1)*100);
+        return `<tr>
+          <td><span class="ranking-number">${index+1}</span></td>
+          <td><strong>${escapeHtml(info.word)}</strong></td>
+          <td>${escapeHtml(info.code)} — ${escapeHtml(info.label)}</td>
+          <td>${count}</td>
+          <td>${percentage}%</td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="5">Aucun adjectif QDSA sur cette période.</td></tr>`;
+}
+
 function qdsaRollingRange(endDateValue,days){
   const end=endOfDay(new Date(`${endDateValue}T12:00:00`));
   const start=startOfDay(new Date(end));
@@ -1303,6 +2116,7 @@ function updateQDSAMonthControls(){
 
 function renderQDSAScore(){
   const painName=$("qdsaScorePainName").value;
+  renderQDSARanking();
 
   const weekRange=qdsaRollingRange(
     $("qdsaWeekEndDate").value||localDateValue(),
@@ -1334,7 +2148,8 @@ function renderQDSAScore(){
 }
 
 function exportData(){
-  const payload={app:"Suivi santé",version:11,exportedAt:new Date().toISOString(),events,settings:appSettings};
+  const exportSettings={...appSettings,notifiedReminders:{}};
+  const payload={app:"Suivi santé",version:14,exportedAt:new Date().toISOString(),events,settings:exportSettings};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`suivi-sante-${localDateValue()}.json`;a.click();URL.revokeObjectURL(url);setStatus($("dataStatus"),"Export créé.");
 }
 async function importData(file){
@@ -1368,6 +2183,19 @@ async function importData(file){
           });
       }
       appSettings.dailyItems=[...dailyMap.values()];
+
+      const appointmentMap=new Map(appSettings.appointments.map(item=>[item.id,item]));
+      if(Array.isArray(parsed.settings.appointments)){
+        parsed.settings.appointments.map(normalizeAppointment).filter(Boolean).forEach(item=>appointmentMap.set(item.id,item));
+      }
+      appSettings.appointments=[...appointmentMap.values()];
+
+      const prescriptionMap=new Map(appSettings.prescriptions.map(item=>[item.id,item]));
+      if(Array.isArray(parsed.settings.prescriptions)){
+        parsed.settings.prescriptions.map(normalizePrescription).filter(Boolean).forEach(item=>prescriptionMap.set(item.id,item));
+      }
+      appSettings.prescriptions=[...prescriptionMap.values()];
+
       saveSettings();
     }
 
@@ -1378,7 +2206,7 @@ async function importData(file){
   }
 }
 
-function renderAll(){updateNameLists();renderRecurringList();renderDailyPanel();renderQDSA();renderZonePickers();renderJournal();renderCharts();renderStats();renderLinks();renderQDSAScore();}
+function renderAll(){updateNameLists();renderRecurringList();renderDailyPanel();renderQDSA();renderZonePickers();renderJournal();renderCharts();renderStats();renderLinks();renderAgenda();renderQDSAScore();}
 
 document.addEventListener("click",event=>{
   const typeBtn=event.target.closest("[data-event-type]");if(typeBtn)setEventType(typeBtn.dataset.eventType);
@@ -1391,6 +2219,18 @@ document.addEventListener("click",event=>{
   const dailyEvaluate=event.target.closest("[data-daily-evaluate-type]");if(dailyEvaluate)startRecurring(dailyEvaluate.dataset.dailyEvaluateType,dailyEvaluate.dataset.dailyEvaluateName);
   const dailyEdit=event.target.closest("[data-daily-edit]");if(dailyEdit)editEvent(dailyEdit.dataset.dailyEdit);
   const dailyRemove=event.target.closest("[data-daily-remove-type]");if(dailyRemove)removeDailyItem(dailyRemove.dataset.dailyRemoveType,dailyRemove.dataset.dailyRemoveName);
+  const appointmentToggle=event.target.closest("[data-appointment-toggle]");if(appointmentToggle)toggleAppointmentCompleted(appointmentToggle.dataset.appointmentToggle);
+  const appointmentCalendar=event.target.closest("[data-appointment-calendar]");if(appointmentCalendar)appointmentICS(appointmentCalendar.dataset.appointmentCalendar);
+  const appointmentEdit=event.target.closest("[data-appointment-edit]");if(appointmentEdit)editAppointment(appointmentEdit.dataset.appointmentEdit);
+  const appointmentDelete=event.target.closest("[data-appointment-delete]");if(appointmentDelete)deleteAppointment(appointmentDelete.dataset.appointmentDelete);
+  const prescriptionToggle=event.target.closest("[data-prescription-toggle]");if(prescriptionToggle)togglePrescriptionPickedUp(prescriptionToggle.dataset.prescriptionToggle);
+  const prescriptionCalendar=event.target.closest("[data-prescription-calendar]");if(prescriptionCalendar)prescriptionICS(prescriptionCalendar.dataset.prescriptionCalendar);
+  const prescriptionEdit=event.target.closest("[data-prescription-edit]");if(prescriptionEdit)editPrescription(prescriptionEdit.dataset.prescriptionEdit);
+  const prescriptionDelete=event.target.closest("[data-prescription-delete]");if(prescriptionDelete)deletePrescription(prescriptionDelete.dataset.prescriptionDelete);
+  const chartDatum=event.target.closest("[data-chart-value]");if(chartDatum){
+    const readout=chartDatum.closest(".chart")?.querySelector(".chart-readout");
+    if(readout)readout.innerHTML=`<strong>${escapeHtml(chartDatum.dataset.chartLabel)}</strong> : ${escapeHtml(chartDatum.dataset.chartValue)}`;
+  }
   const editBtn=event.target.closest("[data-edit]");if(editBtn)editEvent(editBtn.dataset.edit);
   const deleteBtn=event.target.closest("[data-delete]");if(deleteBtn)deleteEvent(deleteBtn.dataset.delete);
 });
@@ -1410,6 +2250,36 @@ $("addDailyItemButton").addEventListener("click",()=>{
   addDailyItem(item.type,item.name);
 });
 $("relatedType").addEventListener("change",updateRelatedFields);
+
+$("appointmentForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const item=appointmentFromForm();
+  if(!item){setStatus($("agendaStatus"),"Vérifie le nom, la date et l’heure du rendez-vous.",5000);return}
+  const index=appSettings.appointments.findIndex(entry=>entry.id===item.id);
+  if(index>=0)appSettings.appointments[index]=item;else appSettings.appointments.push(item);
+  saveSettings();
+  resetAppointmentForm();
+  renderAgenda();
+  setStatus($("agendaStatus"),index>=0?"Rendez-vous modifié.":"Rendez-vous enregistré.");
+});
+
+$("prescriptionForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const item=prescriptionFromForm();
+  if(!item){setStatus($("agendaStatus"),"Vérifie les dates et la durée de l’ordonnance.",5000);return}
+  const index=appSettings.prescriptions.findIndex(entry=>entry.id===item.id);
+  if(index>=0)appSettings.prescriptions[index]=item;else appSettings.prescriptions.push(item);
+  saveSettings();
+  resetPrescriptionForm();
+  renderAgenda();
+  setStatus($("agendaStatus"),index>=0?"Ordonnance modifiée.":"Ordonnance enregistrée.");
+});
+
+$("appointmentCancelButton").addEventListener("click",resetAppointmentForm);
+$("prescriptionCancelButton").addEventListener("click",resetPrescriptionForm);
+["prescriptionStartDate","prescriptionDurationDays"].forEach(id=>$(id).addEventListener("input",updatePrescriptionEndPreview));
+$("notificationButton").addEventListener("click",requestNotifications);
+
 $("eventForm").addEventListener("submit",event=>{
   event.preventDefault();const item=currentEvent();if(!item)return;if(!item.name){setStatus($("formStatus"),"Le nom de l’événement est obligatoire.",4000);return}
   const index=events.findIndex(e=>e.id===item.id);if(index>=0)events[index]=item;else events.push(item);saveEvents();resetForm();renderAll();setStatus($("formStatus"),index>=0?"Événement modifié.":"Événement enregistré.");
@@ -1420,15 +2290,39 @@ $("dataButton").addEventListener("click",()=>showPage("data"));
 ["journalType","journalFrom","journalTo","journalSearch"].forEach(id=>$(id).addEventListener("input",renderJournal));
 $("resetJournal").addEventListener("click",()=>{$("journalType").value="";$("journalFrom").value="";$("journalTo").value="";$("journalSearch").value="";renderJournal()});
 ["chartTargetMode","chartTargetName","chartGrouping","chartFrom","chartTo"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="chartTargetMode")updateTargetControl($("chartTargetMode"),$("chartTargetName"));renderCharts()}));
-$("chartLast30").addEventListener("click",()=>{const t=new Date(),d=new Date();d.setDate(t.getDate()-29);$("chartFrom").value=localDateValue(d);$("chartTo").value=localDateValue(t);renderCharts()});
+$("chartToday").addEventListener("click",()=>{
+  const today=localDateValue();
+  $("chartFrom").value=today;
+  $("chartTo").value=today;
+  $("chartGrouping").value="hour";
+  renderCharts();
+});
+$("chartCurrentMonth").addEventListener("click",()=>{
+  const today=new Date();
+  const first=new Date(today.getFullYear(),today.getMonth(),1);
+  const last=new Date(today.getFullYear(),today.getMonth()+1,0);
+  $("chartFrom").value=localDateValue(first);
+  $("chartTo").value=localDateValue(last);
+  $("chartGrouping").value="day";
+  renderCharts();
+});
+$("chartLast30").addEventListener("click",()=>{const t=new Date(),d=new Date();d.setDate(t.getDate()-29);$("chartFrom").value=localDateValue(d);$("chartTo").value=localDateValue(t);$("chartGrouping").value="day";renderCharts()});
 $("chartAll").addEventListener("click",()=>{$("chartFrom").value="";$("chartTo").value="";renderCharts()});
+
+let chartResizeTimer=null;
+window.addEventListener("resize",()=>{
+  clearTimeout(chartResizeTimer);
+  chartResizeTimer=setTimeout(()=>{
+    if($("page-charts").classList.contains("active"))renderCharts();
+  },140);
+});
 ["statsTargetMode","statsTargetName","statsPeriod","statsDate"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="statsTargetMode")updateTargetControl($("statsTargetMode"),$("statsTargetName"));renderStats()}));
 ["linkTargetMode","linkTargetName","linkDirection","linkWindow"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="linkTargetMode")updateTargetControl($("linkTargetMode"),$("linkTargetName"));renderLinks()}));
-["qdsaWeekEndDate","qdsaMonthEndDate","qdsaCalendarMonth","qdsaScorePainName"].forEach(id=>$(id).addEventListener("change",renderQDSAScore));
+["qdsaWeekEndDate","qdsaMonthEndDate","qdsaCalendarMonth","qdsaScorePainName","qdsaRankingPeriod"].forEach(id=>$(id).addEventListener("change",renderQDSAScore));
 $("qdsaMonthMode").addEventListener("change",()=>{updateQDSAMonthControls();renderQDSAScore()});
 $("exportButton").addEventListener("click",exportData);
 $("importInput").addEventListener("change",e=>{const[file]=e.target.files;if(file)importData(file);e.target.value=""});
-$("clearButton").addEventListener("click",()=>askConfirmation("Effacer toutes les données","Toutes les douleurs, symptômes, facteurs, zones personnelles et listes quotidiennes seront supprimés.",()=>{events=[];appSettings=defaultSettings();saveEvents();saveSettings();renderAll();setStatus($("dataStatus"),"Toutes les données ont été effacées.")}));
+$("clearButton").addEventListener("click",()=>askConfirmation("Effacer toutes les données","Toutes les douleurs, symptômes, facteurs, zones personnelles, listes quotidiennes, rendez-vous et ordonnances seront supprimés.",()=>{events=[];appSettings=defaultSettings();saveEvents();saveSettings();resetAppointmentForm();resetPrescriptionForm();renderAll();setStatus($("dataStatus"),"Toutes les données ont été effacées.")}));
 $("dialogConfirm").addEventListener("click",()=>{$("confirmDialog").close();const action=confirmAction;confirmAction=null;if(action)action()});
 $("dialogCancel").addEventListener("click",()=>{confirmAction=null;$("confirmDialog").close()});
 
@@ -1440,9 +2334,13 @@ updateQDSAMonthControls();
 const today=new Date(),monthAgo=new Date();monthAgo.setDate(today.getDate()-29);$("chartFrom").value=localDateValue(monthAgo);$("chartTo").value=localDateValue(today);
 const migratedCount=migrateOldData();if(migratedCount)$("migrationStatus").textContent=`${migratedCount} ancien(s) élément(s) ont été convertis automatiquement.`;
 renderIntensityScales();
-resetForm();renderAll();
-const initial=location.hash.replace("#","");if(["entry","journal","charts","stats","links","qdsa-score","data"].includes(initial))showPage(initial);
+resetForm();
+resetAppointmentForm();
+resetPrescriptionForm();
+renderAll();
+const initial=location.hash.replace("#","");if(["entry","journal","charts","stats","links","agenda","qdsa-score","data"].includes(initial))showPage(initial);
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+setInterval(()=>{renderAgenda();},60000);
 </script>
 </body>
 </html>

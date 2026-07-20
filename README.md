@@ -1,19 +1,17 @@
-# Suivi santé v9
+# Suivi santé v14 — version GitHub
 
-## Page QDSA
+## Graphiques sur téléphone
+- Les graphiques tiennent entièrement dans la largeur de l’écran.
+- Aucun défilement horizontal n’est nécessaire.
+- Les libellés sont espacés automatiquement selon la largeur disponible.
+- Un toucher sur un point ou une barre affiche la période et la valeur.
+- Le graphique se redessine après une rotation du téléphone.
 
-La semaine et le mois ont maintenant des contrôles séparés.
+## Périodes rapides
+- « Aujourd’hui » affiche les 24 heures de la journée.
+- « Ce mois » affiche tous les jours du mois civil.
+- « 30 jours » affiche les 30 derniers jours.
+- Les jours ou heures sans événement restent visibles avec zéro événement et aucune intensité moyenne.
 
-### Semaine
-- choix indépendant du dernier jour ;
-- période de 7 jours glissants.
-
-### Mois
-Deux modes :
-- 30 jours glissants avec choix indépendant du dernier jour ;
-- mois civil complet avec sélection de janvier, février, mars, etc.
-
-Dans le mode mois civil, la fréquence s’adapte au nombre réel de jours :
-- février : x/28 ou x/29 ;
-- mois de 30 jours : x/30 ;
-- mois de 31 jours : x/31.
+## Compatibilité
+Le format des données n’a pas changé. Les anciens exports restent importables et les exports v14 restent structurés comme ceux de la version 13, avec l’agenda dans `settings`.
