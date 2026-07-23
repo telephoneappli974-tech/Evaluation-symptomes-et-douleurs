@@ -1,19 +1,16 @@
-# Suivi santé v15 — version GitHub
+# Suivi santé v17 — version GitHub
 
-## Durée par créneaux horaires
-- Les douleurs et les autres symptômes disposent de 24 boutons, de 00 h à 23 h.
-- Plusieurs créneaux peuvent être sélectionnés.
-- Raccourcis : heure de saisie, toute la journée et effacer.
-- Au moins un créneau est nécessaire pour enregistrer une douleur ou un autre symptôme.
+## Créneau par défaut
+- Une nouvelle douleur ou un nouvel autre symptôme sélectionne automatiquement l’heure de saisie.
+- Le bouton « Heure de saisie » apparaît comme actif.
+- Si la date ou l’heure de saisie change avant toute sélection manuelle, le créneau sélectionné suit cette nouvelle heure.
+- Une modification d’une ancienne entrée conserve ses créneaux existants.
+
+## Retour après modification
+Lorsqu’une entrée est ouverte depuis le Journal puis enregistrée, l’application revient directement au Journal.
 
 ## Graphiques
-- En regroupement horaire, une saisie est répartie dans chacun de ses créneaux.
-- En regroupement quotidien ou mensuel, l’intensité est pondérée par le nombre de créneaux.
-- Exemple : une intensité de 8 sur cinq créneaux contribue comme cinq valeurs de 8.
-- Le graphique de quantité affiche le nombre de créneaux concernés.
+La courbe relie désormais tous les points existants. Un jour ou une heure sans données reste visible sur l’axe, mais ne coupe plus la ligne entre les points précédent et suivant.
 
 ## Compatibilité
-- Le champ `hourSlots` est facultatif.
-- Les anciens exports restent importables.
-- Une ancienne saisie sans `hourSlots` est rattachée à l’heure de sa saisie.
-- Le calcul du score QDSA reste inchangé.
+Le format des données ne change pas. Les anciens exports restent importables.

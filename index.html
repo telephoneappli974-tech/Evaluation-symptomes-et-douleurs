@@ -98,6 +98,7 @@
     .hour-slot-summary{margin-top:8px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);padding:8px 10px;color:var(--muted);font-size:.84rem}
     .hour-slot-summary strong{color:var(--text)}
     .hour-slot-actions{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+    .hour-slot-actions .btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
     @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}.agenda-card-head{display:block}.agenda-status{text-align:left;margin-top:7px}.hour-slot-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.hour-slot-button{padding:9px 2px;font-size:.76rem}}
     .actions,.chips,.quick-buttons,.segmented,.filters{display:flex;flex-wrap:wrap;gap:8px}
     .btn,.chip-button{border:1px solid transparent;border-radius:12px;min-height:42px;padding:9px 13px;font-weight:750}
@@ -356,7 +357,10 @@
         </div>
         <div class="field"><label for="statsDate">Période contenant cette date</label><input type="date" id="statsDate"></div>
       </div>
-      <div class="card"><div class="summary-grid" id="statsSummary"></div></div>
+      <div class="card">
+        <div class="summary-grid" id="statsSummary"></div>
+        <p class="help">L’intensité moyenne est pondérée par le nombre de créneaux de chaque événement. Deux événements présents sur la même heure restent comptés séparément.</p>
+      </div>
       <div class="grid">
         <div class="card span-6"><h3 id="namesStatsTitle">Éléments</h3><div id="namesStats"></div></div>
         <div class="card span-6"><h3>Zones</h3><div id="zonesStats"></div></div>
@@ -664,6 +668,8 @@ const DEFAULT_BODY_ZONES = [
 let events = loadEvents();
 let appSettings = loadSettings();
 let confirmAction = null;
+let editReturnPage = null;
+let hourSlotsManuallyChanged = {pain:false,symptom:false};
 
 const QDSA_GROUPS = [
   {code:"A",label:"Rythme et décharges",words:["Battements","Pulsations","Élancements","En éclairs","Décharges électriques","Coups de marteau"]},
@@ -872,10 +878,24 @@ function renderHourSlots(prefix){
   $(`${prefix}HourSlotSummary`).innerHTML=values.length
     ? `<strong>${values.length} créneau${values.length>1?"x":""}</strong> · ${escapeHtml(formatHourSlots(values))}`
     : `<strong>Aucun créneau sélectionné.</strong> Sélectionne au moins une heure.`;
+
+  const timestampDate=new Date($("timestamp").value);
+  const timestampHour=Number.isNaN(timestampDate.getTime())?new Date().getHours():timestampDate.getHours();
+  const states={
+    timestamp:values.length===1&&values[0]===timestampHour,
+    all:values.length===24,
+    clear:values.length===0
+  };
+  $$(`[data-hour-action][data-hour-prefix="${prefix}"]`).forEach(button=>{
+    const active=Boolean(states[button.dataset.hourAction]);
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
 }
 
-function setHourSlots(prefix,slots){
+function setHourSlots(prefix,slots,manual=false){
   $(`${prefix}HourSlots`).value=normalizeHourSlots(slots).join(",");
+  if(manual)hourSlotsManuallyChanged[prefix]=true;
   renderHourSlots(prefix);
 }
 
@@ -883,16 +903,17 @@ function toggleHourSlot(prefix,hour){
   const value=Number(hour);
   const current=selectedHourSlots(prefix);
   const next=current.includes(value)?current.filter(item=>item!==value):[...current,value];
-  setHourSlots(prefix,next);
+  setHourSlots(prefix,next,true);
 }
 
 function applyHourSlotAction(prefix,action){
   if(action==="all"){
-    setHourSlots(prefix,Array.from({length:24},(_,hour)=>hour));
+    setHourSlots(prefix,Array.from({length:24},(_,hour)=>hour),true);
   }else if(action==="clear"){
-    setHourSlots(prefix,[]);
+    setHourSlots(prefix,[],true);
   }else{
     const date=new Date($("timestamp").value);
+    hourSlotsManuallyChanged[prefix]=false;
     setHourSlots(prefix,[Number.isNaN(date.getTime())?new Date().getHours():date.getHours()]);
   }
 }
@@ -1183,6 +1204,8 @@ function resetForm(){
   $("eventForm").reset();
   $("timestamp").value=localDateTimeValue();
   $("editingId").value="";
+  editReturnPage=null;
+  hourSlotsManuallyChanged={pain:false,symptom:false};
   $("painAdjectives").value="";
   $("qdsaSearch").value="";
   $("painZones").value="";
@@ -1205,11 +1228,13 @@ function resetForm(){
 
 function editEvent(id){
   const event=events.find(item=>item.id===id);if(!event)return;
+  const activePage=document.querySelector(".page.active")?.id||"";
+  editReturnPage=activePage==="page-journal"?"journal":null;
   $("editingId").value=event.id;$("timestamp").value=localDateTimeValue(new Date(event.timestamp));setEventType(event.type);
   if(event.type==="pain"){
-    $("painName").value=event.name;setRange("pain",event.intensity);setHourSlots("pain",eventHourSlots(event));$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();renderZonePicker("pain");
+    $("painName").value=event.name;setRange("pain",event.intensity);setHourSlots("pain",eventHourSlots(event),true);$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();renderZonePicker("pain");
   }else if(event.type==="symptom"){
-    $("symptomName").value=event.name;setRange("symptom",event.intensity);setHourSlots("symptom",eventHourSlots(event));$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";renderZonePicker("symptom");
+    $("symptomName").value=event.name;setRange("symptom",event.intensity);setHourSlots("symptom",eventHourSlots(event),true);$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";renderZonePicker("symptom");
   }else{
     $("factorName").value=event.name;$("factorPolarity").value=event.polarity||"neutral";$("factorCategory").value=event.category||"other";$("factorAmount").value=event.amount||"";$("relatedType").value=event.relatedType||"";updateRelatedFields();$("relatedName").value=event.relatedName||"";$("factorEffect").value=event.effect||"";$("factorCertainty").value=event.certainty||"suspected";$("factorNotes").value=event.notes||"";
   }
@@ -1392,20 +1417,16 @@ function renderLineChart(container,data){
 
   const grid=[0,2,4,6,8,10].map(t=>`<line class="chart-grid" x1="${m.left}" x2="${width-m.right}" y1="${y(t)}" y2="${y(t)}"></line><text class="chart-axis" x="${m.left-7}" y="${y(t)+4}" text-anchor="end">${t}</text>`).join("");
 
-  let previousValid=-2;
-  const pathParts=[];
-  data.forEach((item,index)=>{
-    if(item.average===null){previousValid=-2;return}
-    pathParts.push(`${previousValid===index-1?"L":"M"} ${x(index)} ${y(item.average)}`);
-    previousValid=index;
-  });
+  const validPoints=data.map((item,index)=>({...item,index})).filter(item=>item.average!==null);
+  const pathParts=validPoints.map((item,position)=>`${position?"L":"M"} ${x(item.index)} ${y(item.average)}`);
 
   const points=data.map((item,index)=>{
     if(item.average===null)return "";
     const value=item.average.toFixed(1);
-    return `<g data-chart-value="${value}/10" data-chart-label="${escapeHtml(item.label)}">
+    const slots=`${item.count} créneau${item.count>1?"x":""}`;
+    return `<g data-chart-value="${value}/10 · ${slots}" data-chart-label="${escapeHtml(item.label)}">
       <circle class="chart-hit" cx="${x(index)}" cy="${y(item.average)}" r="${compact?13:11}"></circle>
-      <circle class="chart-point" cx="${x(index)}" cy="${y(item.average)}" r="${compact?3.5:4}"><title>${escapeHtml(item.label)} : ${value}/10</title></circle>
+      <circle class="chart-point" cx="${x(index)}" cy="${y(item.average)}" r="${compact?3.5:4}"><title>${escapeHtml(item.label)} : ${value}/10 · ${slots}</title></circle>
     </g>`;
   }).join("");
 
@@ -1480,9 +1501,23 @@ function linkedFactorsFor(type,name){
 function renderStats(){
   updateTargetControl($("statsTargetMode"),$("statsTargetName"));
   const mode=$("statsTargetMode").value,name=$("statsTargetName").value,{start,end}=periodRange($("statsDate").value||localDateValue(),$("statsPeriod").value);
-  const list=events.filter(e=>eventMatchesTarget(e,mode,name)&&new Date(e.timestamp)>=start&&new Date(e.timestamp)<=end),scores=list.map(e=>e.intensity);
-  const avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:0,max=scores.length?Math.max(...scores):0,min=scores.length?Math.min(...scores):0;
-  $("statsSummary").innerHTML=[["Événements",list.length],["Intensité moyenne",scores.length?avg.toFixed(1)+"/10":"—"],["Maximum",scores.length?max+"/10":"—"],["Minimum",scores.length?min+"/10":"—"]].map(([l,v])=>`<div class="metric"><span class="metric-value">${v}</span><span class="metric-label">${l}</span></div>`).join("");
+  const list=events.filter(e=>eventMatchesTarget(e,mode,name)&&new Date(e.timestamp)>=start&&new Date(e.timestamp)<=end);
+  const scores=list.map(e=>Number(e.intensity)||0);
+  const weighted=list.reduce((result,event)=>{
+    const weight=Math.max(1,eventHourSlots(event).length);
+    result.total+=(Number(event.intensity)||0)*weight;
+    result.slots+=weight;
+    return result;
+  },{total:0,slots:0});
+  const avg=weighted.slots?weighted.total/weighted.slots:0;
+  const max=scores.length?Math.max(...scores):0,min=scores.length?Math.min(...scores):0;
+  $("statsSummary").innerHTML=[
+    ["Événements",list.length],
+    ["Créneaux pondérés",weighted.slots],
+    ["Intensité moyenne",weighted.slots?avg.toFixed(1)+"/10":"—"],
+    ["Maximum",scores.length?max+"/10":"—"],
+    ["Minimum",scores.length?min+"/10":"—"]
+  ].map(([l,v])=>`<div class="metric"><span class="metric-value">${v}</span><span class="metric-label">${l}</span></div>`).join("");
   const type=targetTypeForMode(mode);$("namesStatsTitle").textContent=type==="pain"?"Types de douleur":"Types de symptôme";$("adjectivesStatsCard").hidden=type!=="pain";
   renderFrequency($("namesStats"),frequency(list,e=>e.name),list.length);renderFrequency($("zonesStats"),frequency(list,e=>e.zones||[]),list.length);renderFrequency($("adjectivesStats"),frequency(list,e=>e.adjectives||[]),list.length);
   const linked=specificMode(mode)?linkedFactorsFor(type,name):events.filter(e=>e.type==="factor"&&e.relatedType===type);
@@ -2277,7 +2312,7 @@ function renderQDSAScore(){
 
 function exportData(){
   const exportSettings={...appSettings,notifiedReminders:{}};
-  const payload={app:"Suivi santé",version:15,exportedAt:new Date().toISOString(),events,settings:exportSettings};
+  const payload={app:"Suivi santé",version:17,exportedAt:new Date().toISOString(),events,settings:exportSettings};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`suivi-sante-${localDateValue()}.json`;a.click();URL.revokeObjectURL(url);setStatus($("dataStatus"),"Export créé.");
 }
 async function importData(file){
@@ -2380,6 +2415,12 @@ $("addDailyItemButton").addEventListener("click",()=>{
   addDailyItem(item.type,item.name);
 });
 $("relatedType").addEventListener("change",updateRelatedFields);
+$("timestamp").addEventListener("change",()=>{
+  ["pain","symptom"].forEach(prefix=>{
+    if(!hourSlotsManuallyChanged[prefix])applyHourSlotAction(prefix,"timestamp");
+    else renderHourSlots(prefix);
+  });
+});
 
 $("appointmentForm").addEventListener("submit",event=>{
   event.preventDefault();
@@ -2420,9 +2461,15 @@ $("eventForm").addEventListener("submit",event=>{
     return;
   }
   const index=events.findIndex(e=>e.id===item.id);
+  const returnPage=index>=0?editReturnPage:null;
   if(index>=0)events[index]=item;else events.push(item);
   saveEvents();resetForm();renderAll();
-  setStatus($("formStatus"),index>=0?"Événement modifié.":"Événement enregistré.");
+  if(returnPage==="journal"){
+    showPage("journal");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    setStatus($("formStatus"),index>=0?"Événement modifié.":"Événement enregistré.");
+  }
 });
 $("cancelEditButton").addEventListener("click",resetForm);
 $$(".tab").forEach(tab=>tab.addEventListener("click",()=>showPage(tab.dataset.page)));
