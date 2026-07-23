@@ -92,7 +92,13 @@
     .calculated-date{border:1px solid var(--line);border-radius:12px;background:var(--surface2);padding:10px 12px;font-weight:760}
     .ranking-number{display:inline-grid;place-items:center;min-width:32px;height:32px;border-radius:10px;background:var(--surface2);font-weight:850}
     .checkbox-line{display:flex;align-items:center;gap:9px;font-weight:720}
-    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}.agenda-card-head{display:block}.agenda-status{text-align:left;margin-top:7px}}
+    .hour-slot-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+    .hour-slot-button{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);padding:9px 3px;font-size:.8rem;font-weight:760}
+    .hour-slot-button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .hour-slot-summary{margin-top:8px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);padding:8px 10px;color:var(--muted);font-size:.84rem}
+    .hour-slot-summary strong{color:var(--text)}
+    .hour-slot-actions{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+    @media(max-width:640px){.recurring-list{grid-template-columns:1fr}.inline-add{grid-template-columns:1fr}.agenda-card-head{display:block}.agenda-status{text-align:left;margin-top:7px}.hour-slot-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.hour-slot-button{padding:9px 2px;font-size:.76rem}}
     .actions,.chips,.quick-buttons,.segmented,.filters{display:flex;flex-wrap:wrap;gap:8px}
     .btn,.chip-button{border:1px solid transparent;border-radius:12px;min-height:42px;padding:9px 13px;font-weight:750}
     .btn{background:var(--accent);color:#fff}.btn.secondary,.chip-button{background:var(--surface2);border-color:var(--line);color:var(--text)}.btn.danger{background:transparent;border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}.btn.small,.chip-button{min-height:36px;padding:7px 10px;font-size:.85rem}.btn.full{width:100%}
@@ -182,6 +188,18 @@
               <div class="intensity-anchors"><span>Aucune</span><span>Maximale</span></div>
             </div>
             <div class="field">
+              <span class="field-title">Créneaux horaires concernés</span>
+              <input type="hidden" id="painHourSlots">
+              <p class="help">Sélectionne chaque heure pendant laquelle la douleur était présente. De 00 h à 23 h, cela représente 24 créneaux.</p>
+              <div class="hour-slot-actions">
+                <button type="button" class="btn secondary small" data-hour-action="timestamp" data-hour-prefix="pain">Heure de saisie</button>
+                <button type="button" class="btn secondary small" data-hour-action="all" data-hour-prefix="pain">Toute la journée</button>
+                <button type="button" class="btn secondary small" data-hour-action="clear" data-hour-prefix="pain">Effacer</button>
+              </div>
+              <div class="hour-slot-grid" id="painHourSlotGrid"></div>
+              <div class="hour-slot-summary" id="painHourSlotSummary"></div>
+            </div>
+            <div class="field">
               <span class="field-title">Adjectif(s) du QDSA</span>
               <input type="hidden" id="painAdjectives">
               <div id="selectedAdjectives" class="selected-adjectives empty">Aucun adjectif sélectionné.</div>
@@ -227,6 +245,18 @@
               <input type="hidden" id="symptomIntensity" value="0">
               <div class="intensity-scale" id="symptomIntensityScale" aria-label="Intensité du symptôme de 0 à 10"></div>
               <div class="intensity-anchors"><span>Absent</span><span>Maximal</span></div>
+            </div>
+            <div class="field">
+              <span class="field-title">Créneaux horaires concernés</span>
+              <input type="hidden" id="symptomHourSlots">
+              <p class="help">Sélectionne chaque heure pendant laquelle le symptôme était présent. Les créneaux choisis pondèrent sa moyenne dans les graphiques.</p>
+              <div class="hour-slot-actions">
+                <button type="button" class="btn secondary small" data-hour-action="timestamp" data-hour-prefix="symptom">Heure de saisie</button>
+                <button type="button" class="btn secondary small" data-hour-action="all" data-hour-prefix="symptom">Toute la journée</button>
+                <button type="button" class="btn secondary small" data-hour-action="clear" data-hour-prefix="symptom">Effacer</button>
+              </div>
+              <div class="hour-slot-grid" id="symptomHourSlotGrid"></div>
+              <div class="hour-slot-summary" id="symptomHourSlotSummary"></div>
             </div>
             <div class="field">
               <span class="field-title">Zone(s)</span>
@@ -313,7 +343,7 @@
         </div>
       </div>
       <div class="card"><h3>Intensité moyenne</h3><p class="chart-help">Le graphique entier tient dans l’écran. Appuie sur un point pour afficher sa valeur.</p><div class="chart" id="intensityChart"></div></div>
-      <div class="card"><h3>Nombre d’événements</h3><p class="chart-help">Les périodes sans saisie apparaissent avec une valeur nulle.</p><div class="chart" id="countChart"></div></div>
+      <div class="card"><h3>Nombre de créneaux concernés</h3><p class="chart-help">Chaque heure sélectionnée compte comme un créneau. Les périodes sans saisie apparaissent avec une valeur nulle.</p><div class="chart" id="countChart"></div></div>
     </section>
 
     <section class="page" id="page-stats">
@@ -794,6 +824,84 @@ function setRange(prefix,value){
   $$(`[data-intensity-prefix="${prefix}"]`).forEach(button=>button.classList.toggle("active",Number(button.dataset.intensityValue)===n));
 }
 
+function normalizeHourSlots(values,fallbackTimestamp=null){
+  const source=Array.isArray(values)?values:String(values||"").split(",");
+  const slots=[...new Set(source.map(value=>Number(value)).filter(value=>Number.isInteger(value)&&value>=0&&value<=23))].sort((a,b)=>a-b);
+  if(slots.length)return slots;
+  if(fallbackTimestamp){
+    const date=new Date(fallbackTimestamp);
+    if(!Number.isNaN(date.getTime()))return [date.getHours()];
+  }
+  return [];
+}
+
+function selectedHourSlots(prefix){
+  return normalizeHourSlots($(`${prefix}HourSlots`).value);
+}
+
+function eventHourSlots(event){
+  return normalizeHourSlots(event?.hourSlots,event?.timestamp);
+}
+
+function formatHourNumber(hour){
+  return `${String(hour).padStart(2,"0")} h`;
+}
+
+function formatHourSlots(slots){
+  const values=normalizeHourSlots(slots);
+  if(!values.length)return "Aucun créneau";
+  const ranges=[];
+  let start=values[0],previous=values[0];
+  for(let index=1;index<=values.length;index++){
+    const value=values[index];
+    if(value===previous+1){
+      previous=value;
+      continue;
+    }
+    ranges.push(start===previous?formatHourNumber(start):`${String(start).padStart(2,"0")}–${String(previous).padStart(2,"0")} h`);
+    start=value;
+    previous=value;
+  }
+  return ranges.join(", ");
+}
+
+function renderHourSlots(prefix){
+  const selected=new Set(selectedHourSlots(prefix));
+  $(`${prefix}HourSlotGrid`).innerHTML=Array.from({length:24},(_,hour)=>`<button type="button" class="hour-slot-button ${selected.has(hour)?"active":""}" data-hour-prefix="${prefix}" data-hour-slot="${hour}" aria-pressed="${selected.has(hour)}">${String(hour).padStart(2,"0")} h</button>`).join("");
+  const values=[...selected].sort((a,b)=>a-b);
+  $(`${prefix}HourSlotSummary`).innerHTML=values.length
+    ? `<strong>${values.length} créneau${values.length>1?"x":""}</strong> · ${escapeHtml(formatHourSlots(values))}`
+    : `<strong>Aucun créneau sélectionné.</strong> Sélectionne au moins une heure.`;
+}
+
+function setHourSlots(prefix,slots){
+  $(`${prefix}HourSlots`).value=normalizeHourSlots(slots).join(",");
+  renderHourSlots(prefix);
+}
+
+function toggleHourSlot(prefix,hour){
+  const value=Number(hour);
+  const current=selectedHourSlots(prefix);
+  const next=current.includes(value)?current.filter(item=>item!==value):[...current,value];
+  setHourSlots(prefix,next);
+}
+
+function applyHourSlotAction(prefix,action){
+  if(action==="all"){
+    setHourSlots(prefix,Array.from({length:24},(_,hour)=>hour));
+  }else if(action==="clear"){
+    setHourSlots(prefix,[]);
+  }else{
+    const date=new Date($("timestamp").value);
+    setHourSlots(prefix,[Number.isNaN(date.getTime())?new Date().getHours():date.getHours()]);
+  }
+}
+
+function renderAllHourSlots(){
+  renderHourSlots("pain");
+  renderHourSlots("symptom");
+}
+
 function selectedAdjectives(){
   return normalizeList($("painAdjectives").value);
 }
@@ -1066,8 +1174,8 @@ function currentEvent(){
   const type=$("currentEventType").value;
   if(type==="recurring"||type==="daily")return null;
   const base={id:$("editingId").value||uid(),type,timestamp:new Date($("timestamp").value).toISOString(),updatedAt:new Date().toISOString()};
-  if(type==="pain") return {...base,name:normalizeKey($("painName").value),intensity:Number($("painIntensity").value),adjectives:normalizeList($("painAdjectives").value),zones:normalizeList($("painZones").value),notes:normalizeText($("painNotes").value)};
-  if(type==="symptom") return {...base,name:normalizeKey($("symptomName").value),intensity:Number($("symptomIntensity").value),zones:normalizeList($("symptomZones").value),notes:normalizeText($("symptomNotes").value)};
+  if(type==="pain") return {...base,name:normalizeKey($("painName").value),intensity:Number($("painIntensity").value),hourSlots:selectedHourSlots("pain"),adjectives:normalizeList($("painAdjectives").value),zones:normalizeList($("painZones").value),notes:normalizeText($("painNotes").value)};
+  if(type==="symptom") return {...base,name:normalizeKey($("symptomName").value),intensity:Number($("symptomIntensity").value),hourSlots:selectedHourSlots("symptom"),zones:normalizeList($("symptomZones").value),notes:normalizeText($("symptomNotes").value)};
   return {...base,name:normalizeKey($("factorName").value),polarity:$("factorPolarity").value,category:$("factorCategory").value,amount:normalizeText($("factorAmount").value),relatedType:$("relatedType").value,relatedName:$("relatedType").value?normalizeKey($("relatedName").value):"",effect:$("relatedType").value?$("factorEffect").value:"",certainty:$("relatedType").value?$("factorCertainty").value:"",notes:normalizeText($("factorNotes").value)};
 }
 
@@ -1084,9 +1192,13 @@ function resetForm(){
   $("painNewZone").value="";
   $("symptomNewZone").value="";
   setRange("pain",0);setRange("symptom",0);
+  const currentHour=new Date($("timestamp").value).getHours();
+  setHourSlots("pain",[currentHour]);
+  setHourSlots("symptom",[currentHour]);
   setEventType("pain");
   renderQDSA();
   renderZonePickers();
+  renderAllHourSlots();
   $("cancelEditButton").hidden=true;
   updateRelatedFields();
 }
@@ -1095,9 +1207,9 @@ function editEvent(id){
   const event=events.find(item=>item.id===id);if(!event)return;
   $("editingId").value=event.id;$("timestamp").value=localDateTimeValue(new Date(event.timestamp));setEventType(event.type);
   if(event.type==="pain"){
-    $("painName").value=event.name;setRange("pain",event.intensity);$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();renderZonePicker("pain");
+    $("painName").value=event.name;setRange("pain",event.intensity);setHourSlots("pain",eventHourSlots(event));$("painAdjectives").value=(event.adjectives||[]).join(", ");$("painZones").value=(event.zones||[]).join(", ");$("painNotes").value=event.notes||"";renderQDSA();renderZonePicker("pain");
   }else if(event.type==="symptom"){
-    $("symptomName").value=event.name;setRange("symptom",event.intensity);$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";renderZonePicker("symptom");
+    $("symptomName").value=event.name;setRange("symptom",event.intensity);setHourSlots("symptom",eventHourSlots(event));$("symptomZones").value=(event.zones||[]).join(", ");$("symptomNotes").value=event.notes||"";renderZonePicker("symptom");
   }else{
     $("factorName").value=event.name;$("factorPolarity").value=event.polarity||"neutral";$("factorCategory").value=event.category||"other";$("factorAmount").value=event.amount||"";$("relatedType").value=event.relatedType||"";updateRelatedFields();$("relatedName").value=event.relatedName||"";$("factorEffect").value=event.effect||"";$("factorCertainty").value=event.certainty||"suspected";$("factorNotes").value=event.notes||"";
   }
@@ -1164,8 +1276,8 @@ function tags(items){return (items||[]).length?(items||[]).map(i=>`<span class="
 function eventCard(event){
   const time=new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit"}).format(new Date(event.timestamp));
   let content="";
-  if(event.type==="pain")content=`<div class="event-title">${escapeHtml(event.name)}</div><div class="event-line"><b>Adjectifs :</b> ${tags(event.adjectives)}</div><div class="event-line"><b>Zones :</b> ${tags(event.zones)}</div>${event.notes?`<div class="event-line"><b>Notes :</b> ${escapeHtml(event.notes)}</div>`:""}`;
-  else if(event.type==="symptom")content=`<div class="event-title">${escapeHtml(event.name)}</div><div class="event-line"><b>Zones :</b> ${tags(event.zones)}</div>${event.notes?`<div class="event-line"><b>Notes :</b> ${escapeHtml(event.notes)}</div>`:""}`;
+  if(event.type==="pain")content=`<div class="event-title">${escapeHtml(event.name)}</div><div class="event-line"><b>Créneaux :</b> ${escapeHtml(formatHourSlots(eventHourSlots(event)))} · ${eventHourSlots(event).length} heure${eventHourSlots(event).length>1?"s":""}</div><div class="event-line"><b>Adjectifs :</b> ${tags(event.adjectives)}</div><div class="event-line"><b>Zones :</b> ${tags(event.zones)}</div>${event.notes?`<div class="event-line"><b>Notes :</b> ${escapeHtml(event.notes)}</div>`:""}`;
+  else if(event.type==="symptom")content=`<div class="event-title">${escapeHtml(event.name)}</div><div class="event-line"><b>Créneaux :</b> ${escapeHtml(formatHourSlots(eventHourSlots(event)))} · ${eventHourSlots(event).length} heure${eventHourSlots(event).length>1?"s":""}</div><div class="event-line"><b>Zones :</b> ${tags(event.zones)}</div>${event.notes?`<div class="event-line"><b>Notes :</b> ${escapeHtml(event.notes)}</div>`:""}`;
   else content=`<div class="event-title">${escapeHtml(event.name)}</div><div class="event-line"><b>Nature :</b> ${labelForPolarity(event.polarity)} · <b>Catégorie :</b> ${labelForCategory(event.category)}${event.amount?` · <b>Quantité :</b> ${escapeHtml(event.amount)}`:""}</div>${event.relatedType?`<div class="event-line"><b>Lien déclaré :</b> ${labelForEffect(event.effect)} ${escapeHtml(event.relatedName)} · ${labelForCertainty(event.certainty)}</div>`:""}${event.notes?`<div class="event-line"><b>Notes :</b> ${escapeHtml(event.notes)}</div>`:""}`;
   return `<article class="event ${event.type}"><div class="event-head"><div><div class="event-time">${time}</div><div class="event-kind">${labelForType(event.type)}</div></div>${event.type!=="factor"?`<div class="event-score">${event.intensity}/10</div>`:""}</div>${content}<div class="actions" style="margin-top:11px"><button class="btn secondary small" data-edit="${event.id}">Modifier</button><button class="btn danger small" data-delete="${event.id}">Supprimer</button></div></article>`;
 }
@@ -1193,16 +1305,32 @@ function aggregate(list,grouping,fromDate=null,toDate=null){
   };
 
   list.forEach(e=>{
-    const d=new Date(e.timestamp);let key,label,sort;
+    const d=new Date(e.timestamp);
+    const slots=eventHourSlots(e);
+
     if(grouping==="hour"){
-      const h=d.getHours();key=String(h);label=`${String(h).padStart(2,"0")} h`;sort=h;
-    }else if(grouping==="day"){
+      slots.forEach(hour=>{
+        const key=String(hour),label=`${String(hour).padStart(2,"0")} h`,sort=hour;
+        ensure(key,label,sort);
+        const bucket=map.get(key);
+        bucket.total+=Number(e.intensity)||0;
+        bucket.count++;
+      });
+      return;
+    }
+
+    let key,label,sort;
+    if(grouping==="day"){
       key=localDateValue(d);label=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short"}).format(d);sort=startOfDay(d).getTime();
     }else{
       key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;label=new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(d);sort=new Date(d.getFullYear(),d.getMonth(),1).getTime();
     }
+
     ensure(key,label,sort);
-    const bucket=map.get(key);bucket.total+=e.intensity;bucket.count++;
+    const weight=Math.max(1,slots.length);
+    const bucket=map.get(key);
+    bucket.total+=(Number(e.intensity)||0)*weight;
+    bucket.count+=weight;
   });
 
   if(grouping==="hour"){
@@ -1307,7 +1435,7 @@ function renderBarChart(container,data){
     const x=center-barWidth/2;
     const top=y(item.count);
     const visibleHeight=Math.max(item.count?2:0,ih-(top-m.top));
-    return `<g data-chart-value="${item.count}" data-chart-label="${escapeHtml(item.label)}">
+    return `<g data-chart-value="${item.count} créneau${item.count>1?"x":""}" data-chart-label="${escapeHtml(item.label)}">
       <rect class="chart-hit" x="${m.left+index*band}" y="${m.top}" width="${band}" height="${ih}"></rect>
       <rect class="chart-bar" x="${x}" y="${item.count?top:m.top+ih}" width="${barWidth}" height="${visibleHeight}" rx="${Math.min(4,barWidth/3)}"><title>${escapeHtml(item.label)} : ${item.count}</title></rect>
     </g>`;
@@ -1320,7 +1448,7 @@ function renderBarChart(container,data){
       : "";
   }).join("");
 
-  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Graphique du nombre d’événements">${grid}${bars}${labels}</svg><div class="chart-readout">Appuie sur une barre pour afficher sa valeur.</div>`;
+  container.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Graphique du nombre de créneaux concernés">${grid}${bars}${labels}</svg><div class="chart-readout">Appuie sur une barre pour afficher le nombre de créneaux.</div>`;
 }
 
 function renderCharts(){
@@ -2149,7 +2277,7 @@ function renderQDSAScore(){
 
 function exportData(){
   const exportSettings={...appSettings,notifiedReminders:{}};
-  const payload={app:"Suivi santé",version:14,exportedAt:new Date().toISOString(),events,settings:exportSettings};
+  const payload={app:"Suivi santé",version:15,exportedAt:new Date().toISOString(),events,settings:exportSettings};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`suivi-sante-${localDateValue()}.json`;a.click();URL.revokeObjectURL(url);setStatus($("dataStatus"),"Export créé.");
 }
 async function importData(file){
@@ -2213,6 +2341,8 @@ document.addEventListener("click",event=>{
   const intensityBtn=event.target.closest("[data-intensity-prefix]");if(intensityBtn)setRange(intensityBtn.dataset.intensityPrefix,intensityBtn.dataset.intensityValue);
   const qdsaBtn=event.target.closest("[data-qdsa-word]");if(qdsaBtn)toggleQDSAWord(qdsaBtn.dataset.qdsaWord);
   const recurringBtn=event.target.closest("[data-recurring-type]");if(recurringBtn)startRecurring(recurringBtn.dataset.recurringType,recurringBtn.dataset.recurringName);
+  const hourButton=event.target.closest("[data-hour-slot]");if(hourButton)toggleHourSlot(hourButton.dataset.hourPrefix,hourButton.dataset.hourSlot);
+  const hourAction=event.target.closest("[data-hour-action]");if(hourAction)applyHourSlotAction(hourAction.dataset.hourPrefix,hourAction.dataset.hourAction);
   const zoneBtn=event.target.closest("[data-zone-prefix]");if(zoneBtn)toggleZone(zoneBtn.dataset.zonePrefix,zoneBtn.dataset.zoneValue);
   const addZoneBtn=event.target.closest("[data-add-zone-prefix]");if(addZoneBtn)addCustomZone(addZoneBtn.dataset.addZonePrefix);
   const removeZoneBtn=event.target.closest("[data-remove-zone]");if(removeZoneBtn)removeCustomZone(removeZoneBtn.dataset.removeZone);
@@ -2281,8 +2411,18 @@ $("prescriptionCancelButton").addEventListener("click",resetPrescriptionForm);
 $("notificationButton").addEventListener("click",requestNotifications);
 
 $("eventForm").addEventListener("submit",event=>{
-  event.preventDefault();const item=currentEvent();if(!item)return;if(!item.name){setStatus($("formStatus"),"Le nom de l’événement est obligatoire.",4000);return}
-  const index=events.findIndex(e=>e.id===item.id);if(index>=0)events[index]=item;else events.push(item);saveEvents();resetForm();renderAll();setStatus($("formStatus"),index>=0?"Événement modifié.":"Événement enregistré.");
+  event.preventDefault();
+  const item=currentEvent();
+  if(!item)return;
+  if(!item.name){setStatus($("formStatus"),"Le nom de l’événement est obligatoire.",4000);return}
+  if((item.type==="pain"||item.type==="symptom")&&(!Array.isArray(item.hourSlots)||!item.hourSlots.length)){
+    setStatus($("formStatus"),"Sélectionne au moins un créneau horaire.",5000);
+    return;
+  }
+  const index=events.findIndex(e=>e.id===item.id);
+  if(index>=0)events[index]=item;else events.push(item);
+  saveEvents();resetForm();renderAll();
+  setStatus($("formStatus"),index>=0?"Événement modifié.":"Événement enregistré.");
 });
 $("cancelEditButton").addEventListener("click",resetForm);
 $$(".tab").forEach(tab=>tab.addEventListener("click",()=>showPage(tab.dataset.page)));

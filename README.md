@@ -1,17 +1,19 @@
-# Suivi santé v14 — version GitHub
+# Suivi santé v15 — version GitHub
 
-## Graphiques sur téléphone
-- Les graphiques tiennent entièrement dans la largeur de l’écran.
-- Aucun défilement horizontal n’est nécessaire.
-- Les libellés sont espacés automatiquement selon la largeur disponible.
-- Un toucher sur un point ou une barre affiche la période et la valeur.
-- Le graphique se redessine après une rotation du téléphone.
+## Durée par créneaux horaires
+- Les douleurs et les autres symptômes disposent de 24 boutons, de 00 h à 23 h.
+- Plusieurs créneaux peuvent être sélectionnés.
+- Raccourcis : heure de saisie, toute la journée et effacer.
+- Au moins un créneau est nécessaire pour enregistrer une douleur ou un autre symptôme.
 
-## Périodes rapides
-- « Aujourd’hui » affiche les 24 heures de la journée.
-- « Ce mois » affiche tous les jours du mois civil.
-- « 30 jours » affiche les 30 derniers jours.
-- Les jours ou heures sans événement restent visibles avec zéro événement et aucune intensité moyenne.
+## Graphiques
+- En regroupement horaire, une saisie est répartie dans chacun de ses créneaux.
+- En regroupement quotidien ou mensuel, l’intensité est pondérée par le nombre de créneaux.
+- Exemple : une intensité de 8 sur cinq créneaux contribue comme cinq valeurs de 8.
+- Le graphique de quantité affiche le nombre de créneaux concernés.
 
 ## Compatibilité
-Le format des données n’a pas changé. Les anciens exports restent importables et les exports v14 restent structurés comme ceux de la version 13, avec l’agenda dans `settings`.
+- Le champ `hourSlots` est facultatif.
+- Les anciens exports restent importables.
+- Une ancienne saisie sans `hourSlots` est rattachée à l’heure de sa saisie.
+- Le calcul du score QDSA reste inchangé.
